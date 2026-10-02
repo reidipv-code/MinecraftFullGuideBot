@@ -9,12 +9,23 @@ from functools import lru_cache
 
 
 # ============================================================
-# CONFIGURACIÓN
+# VERSIONES
 # ============================================================
 
+# Minecraft oficial que utiliza el bot
 VERSION = "26.1.2"
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+# PrismarineJS publica los datos de esta versión bajo 26.1
+DATA_VERSION = "26.1"
+
+
+# ============================================================
+# RUTAS
+# ============================================================
+
+BASE_DIR = os.path.dirname(
+    os.path.abspath(__file__)
+)
 
 CACHE_DIR = os.path.join(
     BASE_DIR,
@@ -37,10 +48,14 @@ os.makedirs(
 )
 
 
+# ============================================================
+# URLS
+# ============================================================
+
 PRISMARINE_ITEMS_URL = (
     "https://raw.githubusercontent.com/"
     "PrismarineJS/minecraft-data/master/"
-    f"data/pc/{VERSION}/items.json"
+    f"data/pc/{DATA_VERSION}/items.json"
 )
 
 MOJANG_VERSION_MANIFEST = (
@@ -53,11 +68,15 @@ MOJANG_VERSION_MANIFEST = (
 # DESCARGAS
 # ============================================================
 
-def descargar(url, timeout=120):
+def descargar(url, timeout=180):
+
     request = urllib.request.Request(
         url,
         headers={
-            "User-Agent": "MinecraftFullGuideBot/1.0"
+            "User-Agent": (
+                "Mozilla/5.0 "
+                "MinecraftFullGuideBot"
+            )
         }
     )
 
@@ -65,17 +84,24 @@ def descargar(url, timeout=120):
         request,
         timeout=timeout
     ) as response:
+
         return response.read()
 
 
-def descargar_json(url, timeout=120):
+def descargar_json(
+    url,
+    timeout=180
+):
+
     datos = descargar(
         url,
         timeout
     )
 
     return json.loads(
-        datos.decode("utf-8")
+        datos.decode(
+            "utf-8"
+        )
     )
 
 
@@ -84,6 +110,7 @@ def descargar_json(url, timeout=120):
 # ============================================================
 
 def normalizar_id(valor):
+
     if valor is None:
         return None
 
@@ -99,12 +126,16 @@ def normalizar_id(valor):
         return None
 
     if ":" not in valor:
-        valor = "minecraft:" + valor
+        valor = (
+            "minecraft:"
+            + valor
+        )
 
     return valor
 
 
 def quitar_namespace(valor):
+
     if not valor:
         return ""
 
@@ -114,7 +145,10 @@ def quitar_namespace(valor):
     )[-1]
 
 
-def nombre_legible(identifier):
+def nombre_legible(
+    identifier
+):
+
     nombre = quitar_namespace(
         identifier
     )
@@ -131,11 +165,13 @@ def nombre_legible(identifier):
 
 
 # ============================================================
-# ITEMS
+# ITEMS COMPLETOS
 # ============================================================
 
 def _cargar_items_prismarine():
+
     try:
+
         datos = descargar_json(
             PRISMARINE_ITEMS_URL,
             timeout=180
@@ -151,6 +187,7 @@ def _cargar_items_prismarine():
             datos,
             dict
         ):
+
             if isinstance(
                 datos.get("items"),
                 list
@@ -162,8 +199,10 @@ def _cargar_items_prismarine():
             )
 
     except Exception as error:
+
         print(
-            "[ITEMS] Error cargando items:",
+            "[ITEMS] Error cargando "
+            "Prismarine:",
             error
         )
 
@@ -171,13 +210,14 @@ def _cargar_items_prismarine():
 
 
 # ============================================================
-# MOJANG SERVER JAR
+# SERVER JAR OFICIAL
 # ============================================================
 
 def _obtener_url_server():
+
     manifest = descargar_json(
         MOJANG_VERSION_MANIFEST,
-        timeout=120
+        timeout=180
     )
 
     for version in manifest.get(
@@ -185,7 +225,9 @@ def _obtener_url_server():
         []
     ):
 
-        if version.get("id") != VERSION:
+        if version.get(
+            "id"
+        ) != VERSION:
             continue
 
         version_url = version.get(
@@ -195,18 +237,21 @@ def _obtener_url_server():
         if not version_url:
             break
 
-        datos = descargar_json(
-            version_url,
-            timeout=120
+        version_data = (
+            descargar_json(
+                version_url,
+                timeout=180
+            )
         )
 
         server = (
-            datos
+            version_data
             .get("downloads", {})
             .get("server")
         )
 
         if server:
+
             return server.get(
                 "url"
             )
@@ -215,24 +260,29 @@ def _obtener_url_server():
 
 
 def _obtener_server_jar():
+
     ruta = os.path.join(
         CACHE_DIR,
         f"server_{VERSION}.jar"
     )
 
-    if os.path.isfile(ruta):
+    if os.path.isfile(
+        ruta
+    ):
         return ruta
 
     print(
-        "[ITEMS] Descargando server.jar",
-        VERSION
+        "[ITEMS] Descargando "
+        f"server.jar {VERSION}..."
     )
 
     url = _obtener_url_server()
 
     if not url:
+
         raise RuntimeError(
-            "No se encontró el server.jar oficial."
+            "No se encontró el "
+            f"server.jar de {VERSION}."
         )
 
     datos = descargar(
@@ -244,31 +294,40 @@ def _obtener_server_jar():
         ruta,
         "wb"
     ) as archivo:
-        archivo.write(datos)
+
+        archivo.write(
+            datos
+        )
 
     return ruta
 
 
 # ============================================================
-# RECETAS
+# RECETAS VANILLA
 # ============================================================
 
 def _extraer_recetas():
+
     marca = os.path.join(
         RECIPES_DIR,
         ".ok"
     )
 
-    if os.path.exists(marca):
+    if os.path.exists(
+        marca
+    ):
         return
 
     jar = _obtener_server_jar()
 
     print(
-        "[ITEMS] Extrayendo recetas vanilla..."
+        "[ITEMS] Extrayendo "
+        "recetas vanilla..."
     )
 
-    prefijo = "data/minecraft/recipe/"
+    prefijo = (
+        "data/minecraft/recipe/"
+    )
 
     cantidad = 0
 
@@ -277,7 +336,9 @@ def _extraer_recetas():
         "r"
     ) as archivo_zip:
 
-        for nombre in archivo_zip.namelist():
+        for nombre in (
+            archivo_zip.namelist()
+        ):
 
             if not nombre.startswith(
                 prefijo
@@ -293,15 +354,20 @@ def _extraer_recetas():
                 nombre
             )
 
+            nombre_archivo = os.path.basename(
+                nombre
+            )
+
             destino = os.path.join(
                 RECIPES_DIR,
-                os.path.basename(nombre)
+                nombre_archivo
             )
 
             with open(
                 destino,
                 "wb"
             ) as archivo:
+
                 archivo.write(
                     datos
                 )
@@ -313,6 +379,7 @@ def _extraer_recetas():
         "w",
         encoding="utf-8"
     ) as archivo:
+
         archivo.write(
             str(cantidad)
         )
@@ -324,6 +391,7 @@ def _extraer_recetas():
 
 
 def _leer_recetas():
+
     _extraer_recetas()
 
     recetas = []
@@ -348,6 +416,7 @@ def _leer_recetas():
         )
 
         try:
+
             with open(
                 ruta,
                 "r",
@@ -372,7 +441,7 @@ def _leer_recetas():
         except Exception as error:
 
             print(
-                "[RECETA] Error:",
+                "[RECETA] Error leyendo",
                 nombre,
                 error
             )
@@ -381,10 +450,13 @@ def _leer_recetas():
 
 
 # ============================================================
-# RESULTADO DE RECETA
+# RESULTADO
 # ============================================================
 
-def _resultado_receta(receta):
+def _resultado_receta(
+    receta
+):
+
     resultado = receta.get(
         "result"
     )
@@ -415,13 +487,16 @@ def _resultado_receta(receta):
             return None
 
         try:
+
             cantidad = int(
                 resultado.get(
                     "count",
                     1
                 )
             )
+
         except Exception:
+
             cantidad = 1
 
         return {
@@ -438,7 +513,10 @@ def _resultado_receta(receta):
 # INGREDIENTES
 # ============================================================
 
-def _ingrediente(dato):
+def _ingrediente_id(
+    dato
+):
+
     if dato is None:
         return None
 
@@ -447,44 +525,22 @@ def _ingrediente(dato):
         str
     ):
 
-        if dato.startswith("#"):
+        if dato.startswith(
+            "#"
+        ):
 
-            return {
-                "tipo": "tag",
-                "tag": normalizar_id(
+            return (
+                "#"
+                + quitar_namespace(
                     dato[1:]
                 )
-            }
+            )
 
-        return {
-            "tipo": "item",
-            "id": normalizar_id(
+        return quitar_namespace(
+            normalizar_id(
                 dato
             )
-        }
-
-    if isinstance(
-        dato,
-        list
-    ):
-
-        opciones = []
-
-        for elemento in dato:
-
-            convertido = _ingrediente(
-                elemento
-            )
-
-            if convertido:
-                opciones.append(
-                    convertido
-                )
-
-        return {
-            "tipo": "alternativas",
-            "opciones": opciones
-        }
+        )
 
     if isinstance(
         dato,
@@ -498,12 +554,11 @@ def _ingrediente(dato):
 
         if item_id:
 
-            return {
-                "tipo": "item",
-                "id": normalizar_id(
+            return quitar_namespace(
+                normalizar_id(
                     item_id
                 )
-            }
+            )
 
         tag = dato.get(
             "tag"
@@ -511,12 +566,34 @@ def _ingrediente(dato):
 
         if tag:
 
-            return {
-                "tipo": "tag",
-                "tag": normalizar_id(
-                    tag
+            return (
+                "#"
+                + quitar_namespace(
+                    normalizar_id(
+                        tag
+                    )
                 )
-            }
+            )
+
+    if isinstance(
+        dato,
+        list
+    ):
+
+        opciones = []
+
+        for elemento in dato:
+
+            valor = _ingrediente_id(
+                elemento
+            )
+
+            if valor:
+                opciones.append(
+                    valor
+                )
+
+        return opciones
 
     return None
 
@@ -526,10 +603,11 @@ def _ingrediente(dato):
 # ============================================================
 
 def _grid_vacia():
+
     return [
         [None, None, None],
         [None, None, None],
-        [None, None, None]
+        [None, None, None],
     ]
 
 
@@ -537,7 +615,10 @@ def _grid_vacia():
 # CRAFTING SHAPED
 # ============================================================
 
-def _crafting_shaped(receta):
+def _crafting_shaped(
+    receta
+):
+
     pattern = receta.get(
         "pattern",
         []
@@ -548,7 +629,7 @@ def _crafting_shaped(receta):
         {}
     )
 
-    grid = _grid_vacia()
+    matriz = _grid_vacia()
 
     for y, fila in enumerate(
         pattern[:3]
@@ -571,25 +652,44 @@ def _crafting_shaped(receta):
                 simbolo
             )
 
-            grid[y][x] = _ingrediente(
-                dato
+            matriz[y][x] = (
+                _ingrediente_id(
+                    dato
+                )
             )
 
-    resultado = _resultado_receta(
-        receta
+    resultado = (
+        _resultado_receta(
+            receta
+        )
     )
 
     if not resultado:
         return None
 
     return {
-        "tipo": "crafting_shaped",
+        "tipo": "crafting",
+        "forma": "shaped",
+        "matriz": matriz,
+        "ingredientes": [
+            ingrediente
+            for fila in matriz
+            for ingrediente in fila
+            if ingrediente
+        ],
+        "cantidad": resultado.get(
+            "count",
+            1
+        ),
+        "resultado": (
+            resultado.get(
+                "id"
+            )
+        ),
         "estacion": "mesa_de_crafteo",
-        "grid": grid,
-        "resultado": resultado,
         "archivo": receta.get(
             "_file"
-        )
+        ),
     }
 
 
@@ -597,58 +697,80 @@ def _crafting_shaped(receta):
 # CRAFTING SHAPELESS
 # ============================================================
 
-def _crafting_shapeless(receta):
-    ingredientes = receta.get(
+def _crafting_shapeless(
+    receta
+):
+
+    ingredientes_raw = receta.get(
         "ingredients",
         []
     )
 
-    grid = _grid_vacia()
+    ingredientes = []
 
-    posicion = 0
+    for dato in ingredientes_raw:
 
-    for dato in ingredientes:
-
-        if posicion >= 9:
-            break
-
-        ingrediente = _ingrediente(
-            dato
+        ingrediente = (
+            _ingrediente_id(
+                dato
+            )
         )
 
-        if not ingrediente:
-            continue
+        if ingrediente:
+
+            ingredientes.append(
+                ingrediente
+            )
+
+    matriz = _grid_vacia()
+
+    for posicion, ingrediente in enumerate(
+        ingredientes[:9]
+    ):
 
         y = posicion // 3
         x = posicion % 3
 
-        grid[y][x] = ingrediente
+        matriz[y][x] = ingrediente
 
-        posicion += 1
-
-    resultado = _resultado_receta(
-        receta
+    resultado = (
+        _resultado_receta(
+            receta
+        )
     )
 
     if not resultado:
         return None
 
     return {
-        "tipo": "crafting_shapeless",
+        "tipo": "crafting",
+        "forma": "shapeless",
+        "matriz": matriz,
+        "ingredientes": ingredientes,
+        "cantidad": resultado.get(
+            "count",
+            1
+        ),
+        "resultado": (
+            resultado.get(
+                "id"
+            )
+        ),
         "estacion": "mesa_de_crafteo",
-        "grid": grid,
-        "resultado": resultado,
         "archivo": receta.get(
             "_file"
-        )
+        ),
     }
 
 
 # ============================================================
-# PROCESAMIENTO
+# PROCESOS
 # ============================================================
 
-def _receta_proceso(receta):
+def _receta_proceso(
+    receta
+):
+
     tipo = quitar_namespace(
         receta.get(
             "type",
@@ -656,57 +778,72 @@ def _receta_proceso(receta):
         )
     )
 
-    dato_ingrediente = (
-        receta.get("ingredient")
+    dato = receta.get(
+        "ingredient"
     )
 
-    if dato_ingrediente is None:
-        dato_ingrediente = (
-            receta.get("ingredients")
+    if dato is None:
+
+        datos = receta.get(
+            "ingredients"
         )
 
-    ingrediente = _ingrediente(
-        dato_ingrediente
+        if isinstance(
+            datos,
+            list
+        ) and datos:
+
+            dato = datos[0]
+
+    ingrediente = (
+        _ingrediente_id(
+            dato
+        )
     )
 
-    resultado = _resultado_receta(
-        receta
+    resultado = (
+        _resultado_receta(
+            receta
+        )
     )
 
     if not resultado:
         return None
 
-    estaciones = {
+    procesos = {
         "smelting": "horno",
         "blasting": "alto_horno",
         "smoking": "ahumador",
-        "campfire_cooking": "fogata"
+        "campfire_cooking": "fogata",
     }
 
-    estacion = estaciones.get(
+    proceso = procesos.get(
         tipo,
         tipo
     )
 
-    grid = _grid_vacia()
-
-    grid[1][1] = ingrediente
-
     return {
-        "tipo": tipo,
-        "estacion": estacion,
-        "grid": grid,
+        "tipo": "proceso",
+        "proceso": proceso,
         "ingrediente": ingrediente,
-        "resultado": resultado,
+        "cantidad": resultado.get(
+            "count",
+            1
+        ),
+        "resultado": (
+            resultado.get(
+                "id"
+            )
+        ),
+        "estacion": proceso,
+        "matriz": [
+            [None, None, None],
+            [None, ingrediente, None],
+            [None, None, None],
+        ],
         "archivo": receta.get(
             "_file"
         ),
-        "tiempo": receta.get(
-            "cookingtime"
-        ),
-        "experiencia": receta.get(
-            "experience"
-        )
     }
 
 
@@ -714,33 +851,48 @@ def _receta_proceso(receta):
 # CORTAPIEDRAS
 # ============================================================
 
-def _stonecutting(receta):
-    ingrediente = _ingrediente(
-        receta.get(
-            "ingredient"
+def _stonecutting(
+    receta
+):
+
+    ingrediente = (
+        _ingrediente_id(
+            receta.get(
+                "ingredient"
+            )
         )
     )
 
-    resultado = _resultado_receta(
-        receta
+    resultado = (
+        _resultado_receta(
+            receta
+        )
     )
 
     if not resultado:
         return None
 
-    grid = _grid_vacia()
-
-    grid[1][1] = ingrediente
-
     return {
         "tipo": "stonecutting",
-        "estacion": "cortapiedras",
-        "grid": grid,
         "ingrediente": ingrediente,
-        "resultado": resultado,
+        "cantidad": resultado.get(
+            "count",
+            1
+        ),
+        "resultado": (
+            resultado.get(
+                "id"
+            )
+        ),
+        "estacion": "cortapiedras",
+        "matriz": [
+            [None, None, None],
+            [None, ingrediente, None],
+            [None, None, None],
+        ],
         "archivo": receta.get(
             "_file"
-        )
+        ),
     }
 
 
@@ -748,64 +900,71 @@ def _stonecutting(receta):
 # HERRERÍA
 # ============================================================
 
-def _smithing(receta):
-    template = _ingrediente(
+def _smithing(
+    receta
+):
+
+    template = _ingrediente_id(
         receta.get(
             "template"
         )
     )
 
-    base = _ingrediente(
+    base = _ingrediente_id(
         receta.get(
             "base"
         )
     )
 
-    addition = _ingrediente(
+    addition = _ingrediente_id(
         receta.get(
             "addition"
         )
     )
 
-    resultado = _resultado_receta(
-        receta
+    resultado = (
+        _resultado_receta(
+            receta
+        )
     )
 
     if not resultado:
         return None
 
-    grid = _grid_vacia()
-
-    grid[0][0] = template
-    grid[0][1] = base
-    grid[0][2] = addition
-
     return {
-        "tipo": quitar_namespace(
-            receta.get(
-                "type",
-                "smithing"
+        "tipo": "smithing",
+        "template": template,
+        "base": base,
+        "addition": addition,
+        "cantidad": resultado.get(
+            "count",
+            1
+        ),
+        "resultado": (
+            resultado.get(
+                "id"
             )
         ),
         "estacion": "mesa_de_herreria",
-        "grid": grid,
-        "ingredientes": [
-            template,
-            base,
-            addition
+        "matriz": [
+            [template, base, addition],
+            [None, None, None],
+            [None, None, None],
         ],
-        "resultado": resultado,
         "archivo": receta.get(
             "_file"
-        )
+        ),
     }
 
 
 # ============================================================
-# CONVERSIÓN GENERAL
+# CONVERTIR RECETA
 # ============================================================
 
-def convertir_receta(receta):
+def convertir_receta(
+    receta
+):
+
     tipo = quitar_namespace(
         receta.get(
             "type",
@@ -814,11 +973,13 @@ def convertir_receta(receta):
     )
 
     if tipo == "crafting_shaped":
+
         return _crafting_shaped(
             receta
         )
 
     if tipo == "crafting_shapeless":
+
         return _crafting_shapeless(
             receta
         )
@@ -827,21 +988,24 @@ def convertir_receta(receta):
         "smelting",
         "blasting",
         "smoking",
-        "campfire_cooking"
+        "campfire_cooking",
     }:
+
         return _receta_proceso(
             receta
         )
 
     if tipo == "stonecutting":
+
         return _stonecutting(
             receta
         )
 
     if tipo in {
         "smithing_transform",
-        "smithing_trim"
+        "smithing_trim",
     }:
+
         return _smithing(
             receta
         )
@@ -850,13 +1014,16 @@ def convertir_receta(receta):
 
 
 # ============================================================
-# RECETAS DE UN ITEM
+# RECETAS DE ITEM
 # ============================================================
 
 @lru_cache(
     maxsize=4096
 )
-def obtener_recetas_item(item_id):
+def obtener_recetas_item(
+    item_id
+):
+
     item_id = normalizar_id(
         item_id
     )
@@ -864,29 +1031,36 @@ def obtener_recetas_item(item_id):
     if not item_id:
         return []
 
-    recetas = _leer_recetas()
-
     resultado = []
 
-    for receta in recetas:
+    for receta in _leer_recetas():
 
-        salida = _resultado_receta(
-            receta
+        salida = (
+            _resultado_receta(
+                receta
+            )
         )
 
         if not salida:
             continue
 
-        if normalizar_id(
-            salida.get("id")
-        ) != item_id:
+        salida_id = normalizar_id(
+            salida.get(
+                "id"
+            )
+        )
+
+        if salida_id != item_id:
             continue
 
-        convertida = convertir_receta(
-            receta
+        convertida = (
+            convertir_receta(
+                receta
+            )
         )
 
         if convertida:
+
             resultado.append(
                 convertida
             )
@@ -895,10 +1069,13 @@ def obtener_recetas_item(item_id):
 
 
 # ============================================================
-# INFORMACIÓN DEL ITEM
+# PREPARAR ITEM
 # ============================================================
 
-def _preparar_item(item):
+def _preparar_item(
+    item
+):
+
     if not isinstance(
         item,
         dict
@@ -909,24 +1086,32 @@ def _preparar_item(item):
         item
     )
 
-    identifier = (
+    nombre = (
         item.get("name")
-        or item.get("id")
         or item.get("identifier")
     )
 
-    if not identifier:
+    if not nombre:
         return None
 
     identifier = normalizar_id(
+        nombre
+    )
+
+    item["identifier"] = (
         identifier
     )
 
-    item["identifier"] = identifier
     item["id"] = identifier
 
+    item["name"] = quitar_namespace(
+        identifier
+    )
+
     item["displayName"] = (
-        item.get("displayName")
+        item.get(
+            "displayName"
+        )
         or nombre_legible(
             identifier
         )
@@ -937,16 +1122,19 @@ def _preparar_item(item):
     )
 
     item["category"] = (
-        item.get("category")
-        or item.get(
-            "creative_category"
+        item.get(
+            "category"
         )
         or "misc"
     )
 
     stack = (
-        item.get("stackSize")
-        or item.get("maxStackSize")
+        item.get(
+            "stackSize"
+        )
+        or item.get(
+            "maxStackSize"
+        )
         or 64
     )
 
@@ -961,26 +1149,47 @@ def _preparar_item(item):
     item["maxStackSize"] = stack
 
     durability = (
-        item.get("maxDurability")
-        or item.get("durability")
+        item.get(
+            "maxDurability"
+        )
+        or item.get(
+            "durability"
+        )
     )
 
     try:
+
         if durability is not None:
+
             durability = int(
                 durability
             )
+
     except Exception:
+
         durability = None
 
-    item["durability"] = durability
-    item["maxDurability"] = durability
+    item["durability"] = (
+        durability
+    )
+
+    item["maxDurability"] = (
+        durability
+    )
+
+    # --------------------------------------------------------
+    # TODAS LAS RECETAS
+    # --------------------------------------------------------
 
     recetas = obtener_recetas_item(
         identifier
     )
 
     item["recipes"] = recetas
+
+    item["recipe_count"] = len(
+        recetas
+    )
 
     estaciones = []
 
@@ -994,6 +1203,7 @@ def _preparar_item(item):
             estacion
             and estacion not in estaciones
         ):
+
             estaciones.append(
                 estacion
             )
@@ -1002,70 +1212,78 @@ def _preparar_item(item):
         estaciones
     )
 
-    item["recipe_count"] = len(
-        recetas
-    )
-
     return item
 
 
 # ============================================================
-# ÍNDICE
+# ÍNDICE COMPLETO
 # ============================================================
 
 _ITEMS_INDEX = None
 
 
 def _construir_indice():
+
     global _ITEMS_INDEX
 
     if _ITEMS_INDEX is not None:
         return
 
     print(
-        "[ITEMS] Cargando TODOS los objetos "
-        f"de Minecraft {VERSION}..."
+        "[ITEMS] Cargando TODOS "
+        "los items de Minecraft..."
     )
 
-    items = _cargar_items_prismarine()
+    items = (
+        _cargar_items_prismarine()
+    )
 
     if not items:
+
         raise RuntimeError(
-            "No se pudieron cargar los datos "
-            "de Minecraft."
+            "No se pudieron cargar "
+            "los datos de Minecraft."
         )
 
     indice = {}
 
     for item in items:
 
-        preparado = _preparar_item(
-            item
+        preparado = (
+            _preparar_item(
+                item
+            )
         )
 
         if not preparado:
             continue
 
-        identifier = preparado.get(
-            "identifier"
+        identifier = (
+            preparado.get(
+                "identifier"
+            )
         )
 
         if identifier:
+
             indice[
                 identifier
             ] = preparado
 
     if not indice:
+
         raise RuntimeError(
             "El registro de Minecraft "
-            "no contiene objetos."
+            "está vacío."
         )
 
     _ITEMS_INDEX = indice
 
     print(
         "[ITEMS] Objetos cargados:",
-        len(_ITEMS_INDEX)
+        len(
+            _ITEMS_INDEX
+        )
     )
 
 
@@ -1077,17 +1295,6 @@ def buscar_item(
     texto,
     idioma=None
 ):
-    """
-    Busca un objeto.
-
-    El segundo parámetro `idioma` existe para mantener
-    compatibilidad con comandos/items.py.
-
-    Ejemplo:
-
-        buscar_item("diamond")
-        buscar_item("diamond", "es")
-    """
 
     _construir_indice()
 
@@ -1099,7 +1306,7 @@ def buscar_item(
     ).strip().lower()
 
     # --------------------------------------------------------
-    # ID exacto
+    # ID EXACTO
     # --------------------------------------------------------
 
     item_id = normalizar_id(
@@ -1107,38 +1314,45 @@ def buscar_item(
     )
 
     if item_id in _ITEMS_INDEX:
+
         return _ITEMS_INDEX[
             item_id
         ]
 
     # --------------------------------------------------------
-    # ID corto exacto
+    # ID CORTO
     # --------------------------------------------------------
 
-    for identifier, item in _ITEMS_INDEX.items():
+    for identifier, item in (
+        _ITEMS_INDEX.items()
+    ):
 
         corto = quitar_namespace(
             identifier
         )
 
         if texto == corto:
+
             return item
 
     # --------------------------------------------------------
-    # ID parcial
+    # ID PARCIAL
     # --------------------------------------------------------
 
-    for identifier, item in _ITEMS_INDEX.items():
+    for identifier, item in (
+        _ITEMS_INDEX.items()
+    ):
 
         corto = quitar_namespace(
             identifier
         )
 
         if texto in corto:
+
             return item
 
     # --------------------------------------------------------
-    # Nombre visible
+    # NOMBRE VISIBLE
     # --------------------------------------------------------
 
     texto_normalizado = re.sub(
@@ -1147,56 +1361,58 @@ def buscar_item(
         texto
     ).strip()
 
-    if texto_normalizado:
+    for item in (
+        _ITEMS_INDEX.values()
+    ):
 
-        for item in _ITEMS_INDEX.values():
+        nombre = str(
+            item.get(
+                "displayName",
+                ""
+            )
+        ).lower()
 
-            nombre = str(
-                item.get(
-                    "displayName",
-                    ""
-                )
-            ).lower()
+        nombre_normalizado = re.sub(
+            r"[^a-z0-9áéíóúüñ ]+",
+            " ",
+            nombre
+        ).strip()
 
-            nombre_normalizado = re.sub(
-                r"[^a-z0-9áéíóúüñ ]+",
-                " ",
-                nombre
-            ).strip()
+        if (
+            texto_normalizado
+            == nombre_normalizado
+        ):
 
-            if (
-                texto_normalizado
-                == nombre_normalizado
-            ):
-                return item
+            return item
 
     # --------------------------------------------------------
-    # Nombre visible parcial
+    # NOMBRE PARCIAL
     # --------------------------------------------------------
 
-    if texto_normalizado:
+    for item in (
+        _ITEMS_INDEX.values()
+    ):
 
-        for item in _ITEMS_INDEX.values():
+        nombre = str(
+            item.get(
+                "displayName",
+                ""
+            )
+        ).lower()
 
-            nombre = str(
-                item.get(
-                    "displayName",
-                    ""
-                )
-            ).lower()
+        nombre_normalizado = re.sub(
+            r"[^a-z0-9áéíóúüñ ]+",
+            " ",
+            nombre
+        ).strip()
 
-            nombre_normalizado = re.sub(
-                r"[^a-z0-9áéíóúüñ ]+",
-                " ",
-                nombre
-            ).strip()
+        if (
+            texto_normalizado
+            and texto_normalizado
+            in nombre_normalizado
+        ):
 
-            if (
-                texto_normalizado
-                and texto_normalizado
-                in nombre_normalizado
-            ):
-                return item
+            return item
 
     return None
 
@@ -1209,6 +1425,7 @@ def obtener_item(
     texto,
     idioma=None
 ):
+
     return buscar_item(
         texto,
         idioma
@@ -1219,6 +1436,7 @@ def obtener_item_representativo(
     texto,
     idioma=None
 ):
+
     return buscar_item(
         texto,
         idioma
@@ -1230,6 +1448,7 @@ def obtener_item_representativo(
 # ============================================================
 
 def obtener_todos_items():
+
     _construir_indice()
 
     return list(
@@ -1238,6 +1457,7 @@ def obtener_todos_items():
 
 
 def cargar_items():
+
     _construir_indice()
 
     return _ITEMS_INDEX
@@ -1248,6 +1468,7 @@ def cargar_items():
 # ============================================================
 
 def estadisticas_items():
+
     _construir_indice()
 
     total = len(
@@ -1257,7 +1478,9 @@ def estadisticas_items():
     con_receta = 0
     total_recetas = 0
 
-    for item in _ITEMS_INDEX.values():
+    for item in (
+        _ITEMS_INDEX.values()
+    ):
 
         recetas = item.get(
             "recipes",
@@ -1265,16 +1488,21 @@ def estadisticas_items():
         )
 
         if recetas:
+
             con_receta += 1
+
             total_recetas += len(
                 recetas
             )
 
     return {
         "version": VERSION,
+        "data_version": DATA_VERSION,
         "items": total,
-        "items_con_receta": con_receta,
-        "recetas": total_recetas
+        "items_con_receta": (
+            con_receta
+        ),
+        "recetas": total_recetas,
     }
 
 
@@ -1284,6 +1512,7 @@ def estadisticas_items():
 
 __all__ = [
     "VERSION",
+    "DATA_VERSION",
     "buscar_item",
     "obtener_item",
     "obtener_item_representativo",
