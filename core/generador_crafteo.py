@@ -1,5 +1,4 @@
 import io
-import os
 import urllib.request
 from pathlib import Path
 
@@ -7,48 +6,77 @@ from PIL import Image, ImageDraw, ImageFont
 
 
 # ============================================================
+# MinecraftFullGuideBot
+# GENERADOR DE IMÁGENES DE CRAFTEO
+#
+# - Siempre utiliza cuadrícula 3x3.
+# - No utiliza emojis.
+# - Utiliza texturas reales de Minecraft para los objetos.
+# - La interfaz se genera localmente.
+# - No necesita descargar la GUI de Minecraft.
+# - No realiza ninguna descarga al importar el módulo.
+# ============================================================
+
+
+# ============================================================
 # CONFIGURACIÓN
 # ============================================================
 
-ANCHO_GUI = 176
-ALTO_GUI = 166
-
 ESCALA = 4
 
-ANCHO_FINAL = ANCHO_GUI * ESCALA
-ALTO_FINAL = ALTO_GUI * ESCALA
+ANCHO = 176
+ALTO = 166
 
-VERSION_MINECRAFT = "1.21.4"
+ANCHO_FINAL = ANCHO * ESCALA
+ALTO_FINAL = ALTO * ESCALA
 
-CACHE_DIR = Path(
-    os.getenv(
-        "MINECRAFT_ASSETS_CACHE",
-        "/tmp/minecraft_fullguide_assets",
-    )
+CACHE = Path(
+    "/tmp/minecraft_fullguide_assets"
 )
 
-CACHE_DIR.mkdir(
+CACHE.mkdir(
     parents=True,
     exist_ok=True,
 )
 
 
 # ============================================================
-# URLS OFICIALES DE MINECRAFT
+# TEXTURAS REALES DE MINECRAFT
 # ============================================================
 
-VERSION_MANIFEST_URL = (
-    "https://piston-meta.mojang.com/mc/game/"
-    "version_manifest_v2.json"
-)
-
-ASSET_BASE_URL = (
-    "https://resources.download.minecraft.net"
+BASE_URL = (
+    "https://raw.githubusercontent.com/"
+    "InventivetalentDev/minecraft-assets/"
+    "1.21.4/assets/minecraft/"
 )
 
 
+TEXTURAS = {
+    "diamond": "textures/item/diamond.png",
+    "stick": "textures/item/stick.png",
+
+    "diamond_pickaxe":
+        "textures/item/diamond_pickaxe.png",
+
+    "diamond_sword":
+        "textures/item/diamond_sword.png",
+
+    "planks":
+        "textures/block/oak_planks.png",
+
+    "cobblestone":
+        "textures/block/cobblestone.png",
+
+    "crafting_table":
+        "textures/item/crafting_table.png",
+
+    "furnace":
+        "textures/item/furnace.png",
+}
+
+
 # ============================================================
-# POSICIONES DE LA INTERFAZ VANILLA
+# POSICIONES DE LA CUADRÍCULA VANILLA
 # ============================================================
 
 GRID_X = 30
@@ -61,56 +89,21 @@ RESULTADO_Y = 35
 
 
 # ============================================================
-# RUTAS DE TEXTURAS
-# ============================================================
-
-TEXTURAS = {
-    "diamond": [
-        "minecraft/textures/item/diamond.png",
-    ],
-
-    "stick": [
-        "minecraft/textures/item/stick.png",
-    ],
-
-    "diamond_pickaxe": [
-        "minecraft/textures/item/diamond_pickaxe.png",
-    ],
-
-    "diamond_sword": [
-        "minecraft/textures/item/diamond_sword.png",
-    ],
-
-    "planks": [
-        "minecraft/textures/block/oak_planks.png",
-    ],
-
-    "cobblestone": [
-        "minecraft/textures/block/cobblestone.png",
-    ],
-
-    "crafting_table": [
-        "minecraft/textures/item/crafting_table.png",
-        "minecraft/textures/block/crafting_table_front.png",
-        "minecraft/textures/block/crafting_table_side.png",
-    ],
-
-    "furnace": [
-        "minecraft/textures/item/furnace.png",
-        "minecraft/textures/block/furnace_front.png",
-    ],
-}
-
-
-# ============================================================
 # FUENTES
 # ============================================================
 
 FUENTES = [
-    "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
-    "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
-    "/usr/share/fonts/truetype/liberation2/LiberationSans-Bold.ttf",
-    "/usr/share/fonts/truetype/liberation2/LiberationSans-Regular.ttf",
+    "/usr/share/fonts/truetype/dejavu/"
+    "DejaVuSans-Bold.ttf",
+
+    "/usr/share/fonts/truetype/dejavu/"
+    "DejaVuSans.ttf",
+
+    "/usr/share/fonts/truetype/liberation2/"
+    "LiberationSans-Bold.ttf",
+
+    "/usr/share/fonts/truetype/liberation2/"
+    "LiberationSans-Regular.ttf",
 ]
 
 
@@ -122,348 +115,90 @@ def obtener_fuente(tamano):
                 tamano,
             )
         except Exception:
-            pass
+            continue
 
     return ImageFont.load_default()
 
 
 # ============================================================
-# HTTP
+# DESCARGA DE TEXTURAS
 # ============================================================
 
-def descargar_bytes(url):
-    request = urllib.request.Request(
-        url,
-        headers={
-            "User-Agent": (
-                "MinecraftFullGuideBot/1.0 "
-                "(Minecraft guide bot)"
-            )
-        },
+def descargar_textura(
+    identificador,
+):
+    ruta = TEXTURAS.get(
+        identificador
     )
 
-    with urllib.request.urlopen(
-        request,
-        timeout=20,
-    ) as response:
-        return response.read()
-
-
-# ============================================================
-# MANIFEST DE VERSIONES
-# ============================================================
-
-def obtener_version_url():
-    cache = CACHE_DIR / "version_manifest.json"
-
-    try:
-        if cache.exists():
-            datos = cache.read_bytes()
-        else:
-            datos = descargar_bytes(
-                VERSION_MANIFEST_URL
-            )
-            cache.write_bytes(datos)
-
-        import json
-
-        manifest = json.loads(
-            datos.decode("utf-8")
-        )
-
-        for version in manifest.get(
-            "versions",
-            [],
-        ):
-            if version.get("id") == VERSION_MINECRAFT:
-                return version.get("url")
-
-    except Exception as error:
-        print(
-            "[MinecraftFullGuideBot] "
-            f"Error obteniendo manifest: {error}"
-        )
-
-    return None
-
-
-# ============================================================
-# ASSET INDEX
-# ============================================================
-
-def obtener_asset_index():
-    import json
-
-    cache = CACHE_DIR / (
-        f"asset_index_{VERSION_MINECRAFT}.json"
-    )
-
-    try:
-        if cache.exists():
-            datos = cache.read_bytes()
-
-            return json.loads(
-                datos.decode("utf-8")
-            )
-
-        version_url = obtener_version_url()
-
-        if not version_url:
-            return None
-
-        datos_version = descargar_bytes(
-            version_url
-        )
-
-        version = json.loads(
-            datos_version.decode("utf-8")
-        )
-
-        asset_index = version.get(
-            "assetIndex"
-        )
-
-        if not asset_index:
-            return None
-
-        asset_url = asset_index.get(
-            "url"
-        )
-
-        if not asset_url:
-            return None
-
-        datos_assets = descargar_bytes(
-            asset_url
-        )
-
-        cache.write_bytes(
-            datos_assets
-        )
-
-        return json.loads(
-            datos_assets.decode("utf-8")
-        )
-
-    except Exception as error:
-        print(
-            "[MinecraftFullGuideBot] "
-            f"Error obteniendo assets: {error}"
-        )
-
+    if ruta is None:
         return None
 
-
-# ============================================================
-# OBTENER TEXTURA DESDE LOS ASSETS DE MOJANG
-# ============================================================
-
-def obtener_asset_minecraft(
-    ruta,
-):
-    import json
-
-    nombre_cache = ruta.replace(
-        "/",
-        "_",
+    archivo = CACHE / (
+        identificador + ".png"
     )
 
-    archivo_cache = (
-        CACHE_DIR / nombre_cache
-    )
+    # --------------------------------------------------------
+    # CACHE
+    # --------------------------------------------------------
 
     if (
-        archivo_cache.exists()
-        and archivo_cache.stat().st_size > 0
+        archivo.exists()
+        and archivo.stat().st_size > 0
     ):
-        return archivo_cache
+        try:
+            return Image.open(
+                archivo
+            ).convert("RGBA")
+        except Exception:
+            try:
+                archivo.unlink()
+            except Exception:
+                pass
 
-    indice = obtener_asset_index()
+    # --------------------------------------------------------
+    # DESCARGA
+    # --------------------------------------------------------
 
-    if not indice:
-        return None
-
-    objeto = indice.get(
-        "objects",
-        {},
-    ).get(ruta)
-
-    if not objeto:
-        return None
-
-    hash_asset = objeto.get(
-        "hash"
-    )
-
-    if not hash_asset:
-        return None
-
-    url = (
-        f"{ASSET_BASE_URL}/"
-        f"{hash_asset[:2]}/"
-        f"{hash_asset}"
-    )
+    url = BASE_URL + ruta
 
     try:
-        datos = descargar_bytes(
-            url
+        request = urllib.request.Request(
+            url,
+            headers={
+                "User-Agent":
+                    "MinecraftFullGuideBot/1.0"
+            },
         )
 
-        archivo_cache.write_bytes(
+        with urllib.request.urlopen(
+            request,
+            timeout=15,
+        ) as respuesta:
+
+            datos = respuesta.read()
+
+        archivo.write_bytes(
             datos
         )
 
-        return archivo_cache
+        return Image.open(
+            io.BytesIO(datos)
+        ).convert("RGBA")
 
     except Exception as error:
+
         print(
             "[MinecraftFullGuideBot] "
-            f"No se pudo descargar {ruta}: "
-            f"{error}"
+            f"No se pudo descargar textura "
+            f"{identificador}: {error}"
         )
 
         return None
 
 
 # ============================================================
-# CARGAR TEXTURA
-# ============================================================
-
-def cargar_textura(
-    identificador,
-):
-    rutas = TEXTURAS.get(
-        identificador,
-        [],
-    )
-
-    for ruta in rutas:
-
-        archivo = obtener_asset_minecraft(
-            ruta
-        )
-
-        if archivo is None:
-            continue
-
-        try:
-            return Image.open(
-                archivo
-            ).convert("RGBA")
-
-        except Exception as error:
-            print(
-                "[MinecraftFullGuideBot] "
-                f"Error leyendo {ruta}: {error}"
-            )
-
-    print(
-        "[MinecraftFullGuideBot] "
-        f"No se encontró textura para "
-        f"{identificador}"
-    )
-
-    return None
-
-
-# ============================================================
-# CARGAR GUI VANILLA
-# ============================================================
-
-def cargar_interfaz_vanilla():
-    rutas = [
-        "minecraft/textures/gui/container/"
-        "crafting_table.png",
-
-        "minecraft/textures/gui/container/"
-        "crafting_table.png",
-    ]
-
-    for ruta in rutas:
-
-        archivo = obtener_asset_minecraft(
-            ruta
-        )
-
-        if archivo is None:
-            continue
-
-        try:
-            return Image.open(
-                archivo
-            ).convert("RGBA")
-
-        except Exception as error:
-            print(
-                "[MinecraftFullGuideBot] "
-                f"Error leyendo GUI: {error}"
-            )
-
-    return None
-
-
-# ============================================================
-# PATRÓN -> 3x3
-# ============================================================
-
-def normalizar_patron(
-    patron,
-):
-    resultado = [
-        [None, None, None],
-        [None, None, None],
-        [None, None, None],
-    ]
-
-    if not patron:
-        return resultado
-
-    alto = min(
-        len(patron),
-        3,
-    )
-
-    ancho = 0
-
-    for fila in patron[:3]:
-        if fila:
-            ancho = max(
-                ancho,
-                min(len(fila), 3),
-            )
-
-    if ancho == 0:
-        return resultado
-
-    desplazamiento_x = (
-        3 - ancho
-    ) // 2
-
-    desplazamiento_y = (
-        3 - alto
-    ) // 2
-
-    for fila in range(alto):
-
-        datos = patron[fila]
-
-        if not datos:
-            continue
-
-        for columna in range(
-            min(len(datos), 3)
-        ):
-            resultado[
-                desplazamiento_y + fila
-            ][
-                desplazamiento_x + columna
-            ] = datos[columna]
-
-    return resultado
-
-
-# ============================================================
-# PREPARAR TEXTURA
+# ESCALAR TEXTURA
 # ============================================================
 
 def preparar_textura(
@@ -482,7 +217,7 @@ def preparar_textura(
 
 
 # ============================================================
-# DIBUJAR TEXTURA EN SLOT
+# DIBUJAR TEXTURA
 # ============================================================
 
 def dibujar_item(
@@ -491,7 +226,7 @@ def dibujar_item(
     x,
     y,
 ):
-    textura = cargar_textura(
+    textura = descargar_textura(
         identificador
     )
 
@@ -526,7 +261,15 @@ def dibujar_cantidad(
     x,
     y,
 ):
-    if not cantidad or cantidad <= 1:
+    if cantidad is None:
+        return
+
+    try:
+        cantidad = int(cantidad)
+    except Exception:
+        return
+
+    if cantidad <= 1:
         return
 
     draw = ImageDraw.Draw(
@@ -534,41 +277,444 @@ def dibujar_cantidad(
     )
 
     fuente = obtener_fuente(
-        10 * ESCALA
+        9 * ESCALA
     )
 
     texto = str(cantidad)
 
-    posicion = (
-        x + 17 * ESCALA,
-        y + 17 * ESCALA,
+    px = (
+        x + 17 * ESCALA
     )
 
+    py = (
+        y + 17 * ESCALA
+    )
+
+    # Sombra
     draw.text(
         (
-            posicion[0] + 2,
-            posicion[1] + 2,
+            px + 2,
+            py + 2,
         ),
         texto,
         font=fuente,
-        fill=(0, 0, 0, 255),
+        fill=(
+            0,
+            0,
+            0,
+            255,
+        ),
         anchor="rb",
     )
 
+    # Número
     draw.text(
-        posicion,
+        (
+            px,
+            py,
+        ),
         texto,
         font=fuente,
-        fill=(255, 255, 255, 255),
+        fill=(
+            255,
+            255,
+            255,
+            255,
+        ),
         anchor="rb",
     )
 
 
 # ============================================================
-# TEXTO EXTERIOR
+# PATRÓN -> SIEMPRE 3x3
 # ============================================================
 
-def agregar_texto(
+def normalizar_patron(
+    patron,
+):
+    resultado = [
+        [None, None, None],
+        [None, None, None],
+        [None, None, None],
+    ]
+
+    if not patron:
+        return resultado
+
+    alto = min(
+        len(patron),
+        3,
+    )
+
+    ancho = 0
+
+    for fila in patron[:3]:
+        if fila:
+            ancho = max(
+                ancho,
+                min(
+                    len(fila),
+                    3,
+                ),
+            )
+
+    if ancho <= 0:
+        return resultado
+
+    offset_x = (
+        3 - ancho
+    ) // 2
+
+    offset_y = (
+        3 - alto
+    ) // 2
+
+    for fila in range(alto):
+
+        datos = patron[fila]
+
+        if not datos:
+            continue
+
+        for columna in range(
+            min(
+                len(datos),
+                3,
+            )
+        ):
+            resultado[
+                offset_y + fila
+            ][
+                offset_x + columna
+            ] = datos[columna]
+
+    return resultado
+
+
+# ============================================================
+# CREAR SLOT VANILLA
+# ============================================================
+
+def dibujar_slot(
+    draw,
+    x,
+    y,
+    tamano=SLOT,
+):
+    x *= ESCALA
+    y *= ESCALA
+
+    ancho = tamano * ESCALA
+
+    # Sombra exterior
+    draw.rectangle(
+        (
+            x,
+            y,
+            x + ancho - 1,
+            y + ancho - 1,
+        ),
+        fill=(
+            55,
+            55,
+            55,
+            255,
+        ),
+    )
+
+    # Borde superior/izquierdo
+    draw.line(
+        (
+            x,
+            y,
+            x + ancho - 1,
+            y,
+        ),
+        fill=(
+            35,
+            35,
+            35,
+            255,
+        ),
+        width=ESCALA,
+    )
+
+    draw.line(
+        (
+            x,
+            y,
+            x,
+            y + ancho - 1,
+        ),
+        fill=(
+            35,
+            35,
+            35,
+            255,
+        ),
+        width=ESCALA,
+    )
+
+    # Interior
+    margen = 2 * ESCALA
+
+    draw.rectangle(
+        (
+            x + margen,
+            y + margen,
+            x + ancho - margen - 1,
+            y + ancho - margen - 1,
+        ),
+        fill=(
+            139,
+            139,
+            139,
+            255,
+        ),
+    )
+
+    # Luz interior
+    draw.line(
+        (
+            x + margen,
+            y + margen,
+            x + ancho - margen - 1,
+            y + margen,
+        ),
+        fill=(
+            198,
+            198,
+            198,
+            255,
+        ),
+        width=ESCALA,
+    )
+
+    draw.line(
+        (
+            x + margen,
+            y + margen,
+            x + margen,
+            y + ancho - margen - 1,
+        ),
+        fill=(
+            198,
+            198,
+            198,
+            255,
+        ),
+        width=ESCALA,
+    )
+
+
+# ============================================================
+# FLECHA
+# ============================================================
+
+def dibujar_flecha(
+    draw,
+):
+    # La flecha de la interfaz de fabricación.
+    x = 105 * ESCALA
+    y = 35 * ESCALA
+
+    # Línea horizontal
+    draw.rectangle(
+        (
+            x,
+            y + 5 * ESCALA,
+            x + 18 * ESCALA,
+            y + 8 * ESCALA,
+        ),
+        fill=(
+            80,
+            80,
+            80,
+            255,
+        ),
+    )
+
+    # Punta
+    draw.polygon(
+        [
+            (
+                x + 18 * ESCALA,
+                y + 2 * ESCALA,
+            ),
+            (
+                x + 25 * ESCALA,
+                y + 7 * ESCALA,
+            ),
+            (
+                x + 18 * ESCALA,
+                y + 12 * ESCALA,
+            ),
+        ],
+        fill=(
+            80,
+            80,
+            80,
+            255,
+        ),
+    )
+
+
+# ============================================================
+# INTERFAZ VANILLA GENERADA LOCALMENTE
+# ============================================================
+
+def crear_interfaz():
+    imagen = Image.new(
+        "RGBA",
+        (
+            ANCHO_FINAL,
+            ALTO_FINAL,
+        ),
+        (
+            198,
+            198,
+            198,
+            255,
+        ),
+    )
+
+    draw = ImageDraw.Draw(
+        imagen
+    )
+
+    # --------------------------------------------------------
+    # Borde exterior
+    # --------------------------------------------------------
+
+    draw.rectangle(
+        (
+            0,
+            0,
+            ANCHO_FINAL - 1,
+            ALTO_FINAL - 1,
+        ),
+        fill=(
+            198,
+            198,
+            198,
+            255,
+        ),
+        outline=(
+            40,
+            40,
+            40,
+            255,
+        ),
+        width=ESCALA,
+    )
+
+    # --------------------------------------------------------
+    # Zona interior
+    # --------------------------------------------------------
+
+    margen = 3 * ESCALA
+
+    draw.rectangle(
+        (
+            margen,
+            margen,
+            ANCHO_FINAL - margen - 1,
+            ALTO_FINAL - margen - 1,
+        ),
+        fill=(
+            139,
+            139,
+            139,
+            255,
+        ),
+    )
+
+    # --------------------------------------------------------
+    # Sombra inferior/derecha
+    # --------------------------------------------------------
+
+    draw.line(
+        (
+            margen,
+            ALTO_FINAL - 5 * ESCALA,
+            ANCHO_FINAL - 5 * ESCALA,
+            ALTO_FINAL - 5 * ESCALA,
+        ),
+        fill=(
+            90,
+            90,
+            90,
+            255,
+        ),
+        width=ESCALA,
+    )
+
+    draw.line(
+        (
+            ANCHO_FINAL - 5 * ESCALA,
+            margen,
+            ANCHO_FINAL - 5 * ESCALA,
+            ALTO_FINAL - 5 * ESCALA,
+        ),
+        fill=(
+            90,
+            90,
+            90,
+            255,
+        ),
+        width=ESCALA,
+    )
+
+    # --------------------------------------------------------
+    # Slots 3x3
+    # --------------------------------------------------------
+
+    for fila in range(3):
+
+        for columna in range(3):
+
+            x = (
+                GRID_X
+                + columna * SLOT
+            )
+
+            y = (
+                GRID_Y
+                + fila * SLOT
+            )
+
+            dibujar_slot(
+                draw,
+                x,
+                y,
+            )
+
+    # --------------------------------------------------------
+    # Slot de resultado
+    # --------------------------------------------------------
+
+    dibujar_slot(
+        draw,
+        RESULTADO_X,
+        RESULTADO_Y,
+    )
+
+    # --------------------------------------------------------
+    # Flecha
+    # --------------------------------------------------------
+
+    dibujar_flecha(
+        draw
+    )
+
+    return imagen
+
+
+# ============================================================
+# TÍTULO SUPERIOR
+# ============================================================
+
+def agregar_titulo(
     imagen,
     item,
 ):
@@ -581,9 +727,9 @@ def agregar_texto(
             imagen.height + alto_extra,
         ),
         (
-            25,
-            25,
-            25,
+            28,
+            28,
+            28,
             255,
         ),
     )
@@ -600,12 +746,12 @@ def agregar_texto(
         resultado
     )
 
-    titulo = obtener_fuente(
+    fuente_titulo = obtener_fuente(
         25
     )
 
-    subtitulo = obtener_fuente(
-        19
+    fuente_nombre = obtener_fuente(
+        18
     )
 
     nombre = item.get(
@@ -613,52 +759,94 @@ def agregar_texto(
         "Objeto",
     )
 
-    # Sombra del título
+    # --------------------------------------------------------
+    # Título
+    # --------------------------------------------------------
+
     draw.text(
-        (21, 16),
+        (
+            22,
+            17,
+        ),
         "FABRICACIÓN",
-        font=titulo,
-        fill=(0, 0, 0, 255),
+        font=fuente_titulo,
+        fill=(
+            0,
+            0,
+            0,
+            255,
+        ),
     )
 
     draw.text(
-        (20, 15),
+        (
+            20,
+            15,
+        ),
         "FABRICACIÓN",
-        font=titulo,
-        fill=(255, 255, 255, 255),
+        font=fuente_titulo,
+        fill=(
+            255,
+            255,
+            255,
+            255,
+        ),
     )
 
+    # --------------------------------------------------------
     # Nombre
+    # --------------------------------------------------------
+
     draw.text(
-        (21, 57),
+        (
+            21,
+            58,
+        ),
         nombre,
-        font=subtitulo,
-        fill=(0, 0, 0, 255),
+        font=fuente_nombre,
+        fill=(
+            0,
+            0,
+            0,
+            255,
+        ),
     )
 
     draw.text(
-        (20, 56),
+        (
+            20,
+            56,
+        ),
         nombre,
-        font=subtitulo,
-        fill=(220, 220, 220, 255),
+        font=fuente_nombre,
+        fill=(
+            220,
+            220,
+            220,
+            255,
+        ),
     )
 
     return resultado
 
 
 # ============================================================
-# GENERADOR PRINCIPAL
+# FUNCIÓN PRINCIPAL
 # ============================================================
 
 def generar_imagen_crafteo(
     item,
 ):
     """
-    Genera la imagen del crafteo.
+    Genera la imagen de fabricación de un objeto.
 
-    IMPORTANTE:
-    Esta función es la que importa comandos/items.py.
+    Devuelve:
+        BytesIO con PNG
+        o None si no existe receta.
     """
+
+    if not item:
+        return None
 
     receta = item.get(
         "receta"
@@ -667,71 +855,26 @@ def generar_imagen_crafteo(
     if not receta:
         return None
 
-    patron = receta.get(
+    patron_original = receta.get(
         "patron"
     )
 
-    if not patron:
+    if not patron_original:
         return None
 
     # --------------------------------------------------------
-    # SIEMPRE 3x3
+    # NORMALIZAR SIEMPRE A 3x3
     # --------------------------------------------------------
 
     patron = normalizar_patron(
-        patron
+        patron_original
     )
 
     # --------------------------------------------------------
-    # CARGAR GUI REAL DE MINECRAFT
+    # CREAR INTERFAZ
     # --------------------------------------------------------
 
-    interfaz = cargar_interfaz_vanilla()
-
-    if interfaz is None:
-        print(
-            "[MinecraftFullGuideBot] "
-            "No se pudo cargar la GUI vanilla."
-        )
-
-        return None
-
-    # --------------------------------------------------------
-    # La GUI vanilla utiliza los primeros 176x166 px.
-    # --------------------------------------------------------
-
-    if (
-        interfaz.width >= 176
-        and interfaz.height >= 166
-    ):
-        interfaz = interfaz.crop(
-            (
-                0,
-                0,
-                176,
-                166,
-            )
-        )
-    else:
-        interfaz = interfaz.resize(
-            (
-                176,
-                166,
-            ),
-            Image.Resampling.NEAREST,
-        )
-
-    # --------------------------------------------------------
-    # ESCALAR SIN SUAVIZADO
-    # --------------------------------------------------------
-
-    imagen = interfaz.resize(
-        (
-            ANCHO_FINAL,
-            ALTO_FINAL,
-        ),
-        Image.Resampling.NEAREST,
-    )
+    imagen = crear_interfaz()
 
     # --------------------------------------------------------
     # INGREDIENTES
@@ -769,13 +912,11 @@ def generar_imagen_crafteo(
     # RESULTADO
     # --------------------------------------------------------
 
-    identificador_resultado = (
-        receta.get(
-            "resultado",
-            item.get(
-                "identificador"
-            ),
-        )
+    resultado = receta.get(
+        "resultado",
+        item.get(
+            "identificador"
+        ),
     )
 
     x_resultado = (
@@ -788,13 +929,13 @@ def generar_imagen_crafteo(
 
     dibujar_item(
         imagen,
-        identificador_resultado,
+        resultado,
         x_resultado,
         y_resultado,
     )
 
     # --------------------------------------------------------
-    # CANTIDAD DEL RESULTADO
+    # CANTIDAD
     # --------------------------------------------------------
 
     dibujar_cantidad(
@@ -808,10 +949,10 @@ def generar_imagen_crafteo(
     )
 
     # --------------------------------------------------------
-    # TÍTULO Y NOMBRE
+    # TÍTULO
     # --------------------------------------------------------
 
-    imagen = agregar_texto(
+    imagen = agregar_titulo(
         imagen,
         item,
     )
@@ -830,7 +971,8 @@ def generar_imagen_crafteo(
 
     buffer.seek(0)
 
-    # Telegram puede utilizar este nombre al enviar el buffer.
-    buffer.name = "crafteo_minecraft.png"
+    buffer.name = (
+        "crafteo_minecraft.png"
+    )
 
     return buffer
