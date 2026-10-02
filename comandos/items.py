@@ -3,10 +3,24 @@
 from telegram import Update
 from telegram.ext import ContextTypes
 
-from datos.idiomas import obtener_idioma_usuario
-from datos.items import buscar_item
-from core.generador_crafteo import generar_imagen_crafteo
+from datos.idiomas import (
+    obtener_idioma_usuario,
+    traducir_identificador,
+)
 
+from datos.items import (
+    buscar_item,
+    obtener_item_representativo,
+)
+
+from core.generador_crafteo import (
+    generar_imagen_crafteo,
+)
+
+
+# ============================================================
+# NOMBRE DE INGREDIENTE
+# ============================================================
 
 def _nombre_ingrediente(
     ingrediente,
@@ -16,15 +30,16 @@ def _nombre_ingrediente(
         return "—"
 
     if ingrediente.startswith("#"):
-        return (
-            "Cualquier "
-            + ingrediente[1:].replace(
-                "_",
-                " ",
-            )
+
+        tag = ingrediente[1:].replace(
+            "_",
+            " ",
         )
 
-    from datos.idiomas import traducir_identificador
+        return (
+            "Cualquier "
+            + tag
+        )
 
     return traducir_identificador(
         ingrediente,
@@ -32,16 +47,34 @@ def _nombre_ingrediente(
     )
 
 
+# ============================================================
+# TEXTO DE RECETA
+# ============================================================
+
 def _texto_receta(
     receta,
     idioma,
 ):
-    tipo = receta.get("tipo")
+    tipo = receta.get(
+        "tipo"
+    )
+
+    # ========================================================
+    # CRAFTING
+    # ========================================================
 
     if tipo == "crafting":
-        forma = receta.get("forma")
+
+        forma = receta.get(
+            "forma"
+        )
+
+        # ----------------------------------------------------
+        # SHAPED
+        # ----------------------------------------------------
 
         if forma == "shaped":
+
             matriz = receta.get(
                 "matriz",
                 [],
@@ -50,7 +83,9 @@ def _texto_receta(
             ingredientes = []
 
             for fila in matriz:
+
                 for ingrediente in fila:
+
                     if ingrediente:
                         ingredientes.append(
                             ingrediente
@@ -62,6 +97,7 @@ def _texto_receta(
             cantidades = {}
 
             for ingrediente in ingredientes:
+
                 cantidades[ingrediente] = (
                     cantidades.get(
                         ingrediente,
@@ -73,6 +109,7 @@ def _texto_receta(
             partes = []
 
             for ingrediente, cantidad in cantidades.items():
+
                 nombre = _nombre_ingrediente(
                     ingrediente,
                     idioma,
@@ -82,41 +119,79 @@ def _texto_receta(
                     f"{cantidad}× {nombre}"
                 )
 
-            return "\n".join(partes)
+            texto = "\n".join(
+                partes
+            )
 
-        ingredientes = receta.get(
-            "ingredientes",
-            [],
+        # ----------------------------------------------------
+        # SHAPELESS
+        # ----------------------------------------------------
+
+        else:
+
+            ingredientes = receta.get(
+                "ingredientes",
+                [],
+            )
+
+            cantidades = {}
+
+            for ingrediente in ingredientes:
+
+                cantidades[ingrediente] = (
+                    cantidades.get(
+                        ingrediente,
+                        0,
+                    )
+                    + 1
+                )
+
+            partes = []
+
+            for ingrediente, cantidad in cantidades.items():
+
+                nombre = _nombre_ingrediente(
+                    ingrediente,
+                    idioma,
+                )
+
+                partes.append(
+                    f"{cantidad}× {nombre}"
+                )
+
+            texto = "\n".join(
+                partes
+            )
+
+        cantidad = receta.get(
+            "cantidad",
+            1,
         )
 
-        cantidades = {}
+        texto += (
+            "\n\n"
+            "🛠️ <b>Se fabrica con:</b> "
+            "Mesa de crafteo"
+        )
 
-        for ingrediente in ingredientes:
-            cantidades[ingrediente] = (
-                cantidades.get(
-                    ingrediente,
-                    0,
-                )
-                + 1
+        if cantidad > 1:
+            texto += (
+                f"\n📦 Resultado: "
+                f"{cantidad}"
             )
 
-        partes = []
+        return texto
 
-        for ingrediente, cantidad in cantidades.items():
-            nombre = _nombre_ingrediente(
-                ingrediente,
-                idioma,
-            )
-
-            partes.append(
-                f"{cantidad}× {nombre}"
-            )
-
-        return "\n".join(partes)
+    # ========================================================
+    # HORNO / PROCESOS
+    # ========================================================
 
     if tipo == "proceso":
+
         ingrediente = _nombre_ingrediente(
-            receta.get("ingrediente"),
+            receta.get(
+                "ingrediente"
+            ),
             idioma,
         )
 
@@ -132,13 +207,64 @@ def _texto_receta(
             "fogata": "Fogata",
         }
 
-        return (
+        texto = (
             f"{ingrediente} → "
-            f"{nombres.get(proceso, proceso)}"
+            f"{nombres.get(
+                proceso,
+                proceso,
+            )}"
         )
+
+        cantidad = receta.get(
+            "cantidad",
+            1,
+        )
+
+        if cantidad > 1:
+            texto += (
+                f"\n📦 Resultado: "
+                f"{cantidad}"
+            )
+
+        return texto
+
+    # ========================================================
+    # CORTAPIEDRAS
+    # ========================================================
+
+    if tipo == "stonecutting":
+
+        ingrediente = _nombre_ingrediente(
+            receta.get(
+                "ingrediente"
+            ),
+            idioma,
+        )
+
+        cantidad = receta.get(
+            "cantidad",
+            1,
+        )
+
+        texto = (
+            f"{ingrediente} → "
+            "Cortapiedras"
+        )
+
+        if cantidad > 1:
+            texto += (
+                f"\n📦 Resultado: "
+                f"{cantidad}"
+            )
+
+        return texto
 
     return "Sin información."
 
+
+# ============================================================
+# COMANDO ITEM
+# ============================================================
 
 async def comando_item(
     update: Update,
@@ -148,12 +274,14 @@ async def comando_item(
         return
 
     if not context.args:
+
         await update.message.reply_text(
             "❌ Usa:\n"
             "/item <nombre>\n\n"
             "Ejemplo:\n"
             "/item pico de diamante"
         )
+
         return
 
     consulta = " ".join(
@@ -164,25 +292,39 @@ async def comando_item(
         context
     )
 
+    # ========================================================
+    # BUSCAR
+    # ========================================================
+
     try:
+
         item = buscar_item(
             consulta,
             idioma,
         )
+
     except Exception as error:
+
         await update.message.reply_text(
-            "❌ No se pudieron cargar los "
-            "datos de Minecraft.\n\n"
+            "❌ No se pudieron cargar "
+            "los datos de Minecraft.\n\n"
             f"Error: {error}"
         )
+
         return
 
     if not item:
+
         await update.message.reply_text(
             f"❌ No encontré ningún objeto "
             f"para: {consulta}"
         )
+
         return
+
+    # ========================================================
+    # DATOS PRINCIPALES
+    # ========================================================
 
     nombre = item.get(
         "translatedName",
@@ -197,7 +339,10 @@ async def comando_item(
 
     identifier = item.get(
         "identifier",
-        item.get("name", ""),
+        item.get(
+            "name",
+            "",
+        ),
     )
 
     lineas = [
@@ -206,62 +351,122 @@ async def comando_item(
         f"🆔 <code>{identifier}</code>",
     ]
 
-    if item.get("stackSize"):
+    # ========================================================
+    # CATEGORÍA
+    # ========================================================
+
+    categoria = (
+        item.get("category")
+        or item.get("type")
+    )
+
+    if categoria:
         lineas.append(
-            f"📦 Stack: {item['stackSize']}"
+            f"🗂️ Categoría: "
+            f"{categoria}"
         )
 
-    if item.get("durability"):
+    # ========================================================
+    # STACK
+    # ========================================================
+
+    if item.get(
+        "stackSize"
+    ) is not None:
+
         lineas.append(
-            f"🛡️ Durabilidad: {item['durability']}"
+            f"📦 Stack: "
+            f"{item['stackSize']}"
         )
+
+    # ========================================================
+    # DURABILIDAD
+    # ========================================================
+
+    if item.get(
+        "durability"
+    ):
+
+        lineas.append(
+            f"🛡️ Durabilidad: "
+            f"{item['durability']}"
+        )
+
+    # ========================================================
+    # RECETAS
+    # ========================================================
 
     recetas = item.get(
         "recipes",
         [],
     )
 
-    if not recetas:
+    if recetas:
+
+        # Mostrar la primera receta real
+        receta = recetas[0]
+
         lineas.extend(
             [
                 "",
-                "📖 Este objeto no tiene una "
-                "receta de fabricación normal.",
+                "🔨 <b>Receta</b>",
+                _texto_receta(
+                    receta,
+                    idioma,
+                ),
             ]
         )
 
-        await update.message.reply_text(
-            "\n".join(lineas),
-            parse_mode="HTML",
+        # Si hay varias recetas
+        if len(recetas) > 1:
+
+            lineas.append(
+                ""
+            )
+
+            lineas.append(
+                f"📚 Este objeto tiene "
+                f"{len(recetas)} recetas "
+                f"registradas."
+            )
+
+    else:
+
+        lineas.extend(
+            [
+                "",
+                "📖 Este objeto no tiene "
+                "una receta de fabricación "
+                "normal.",
+            ]
         )
-        return
 
-    receta = recetas[0]
-
-    lineas.extend(
-        [
-            "",
-            "🔨 <b>Receta</b>",
-            _texto_receta(
-                receta,
-                idioma,
-            ),
-        ]
-    )
+    # ========================================================
+    # ENVIAR INFORMACIÓN
+    # ========================================================
 
     await update.message.reply_text(
         "\n".join(lineas),
         parse_mode="HTML",
     )
 
+    # ========================================================
+    # IMAGEN
+    # ========================================================
+
+    if not recetas:
+        return
+
     try:
+
         imagen = generar_imagen_crafteo(
             item,
-            receta,
+            recetas[0],
             nombre,
         )
 
         if imagen:
+
             await update.message.reply_photo(
                 photo=imagen,
                 caption=(
@@ -271,8 +476,10 @@ async def comando_item(
             )
 
     except Exception as error:
+
         await update.message.reply_text(
-            "⚠️ No se pudo generar la "
-            "imagen de la receta.\n"
+            "⚠️ La receta sí existe, "
+            "pero ocurrió un error al "
+            "generar su imagen.\n\n"
             f"{error}"
         )
