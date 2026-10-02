@@ -9,19 +9,25 @@ from urllib.request import Request, urlopen
 
 
 # ============================================================
-# FUENTES DE DATOS
+# DATOS: MINECRAFT JAVA 26.1
 # ============================================================
 
 ITEMS_URL = (
     "https://raw.githubusercontent.com/"
     "PrismarineJS/minecraft-data/master/"
-    "data/bedrock/1.26.30/items.json"
+    "data/pc/26.1/items.json"
 )
 
 RECIPES_URL = (
     "https://raw.githubusercontent.com/"
     "PrismarineJS/minecraft-data/master/"
-    "data/bedrock/1.19.10/recipes.json"
+    "data/pc/26.1/recipes.json"
+)
+
+# Traducciones oficiales del cliente 26.1.2
+LANG_URL = (
+    "https://assets.mcasset.cloud/"
+    "26.1.2/assets/minecraft/lang/es_es.json"
 )
 
 
@@ -31,36 +37,56 @@ RECIPES_URL = (
 
 CACHE = Path("/tmp/minecraft_fullguide_data")
 
-ITEMS_CACHE = CACHE / "items.json"
-RECIPES_CACHE = CACHE / "recipes.json"
+ITEMS_CACHE = CACHE / "items_26.1.json"
+RECIPES_CACHE = CACHE / "recipes_26.1.json"
+LANG_CACHE = CACHE / "es_es_26.1.2.json"
 
 CACHE_AGE = 7 * 24 * 60 * 60
 
 
 # ============================================================
-# ALIASES EN ESPAÑOL
+# ALIAS EN ESPAÑOL
 # ============================================================
 
 ALIASES = {
+
+    "mesa": "crafting_table",
     "mesa de crafteo": "crafting_table",
     "mesa de trabajo": "crafting_table",
     "mesa de fabricacion": "crafting_table",
     "mesa de fabricación": "crafting_table",
 
-    "piedra base": "bedrock",
+    "horno": "furnace",
+    "alto horno": "blast_furnace",
+    "ahumador": "smoker",
 
+    "cristal": "glass",
+    "vidrio": "glass",
+
+    "arena": "sand",
     "adoquin": "cobblestone",
     "adoquín": "cobblestone",
 
+    "piedra": "stone",
+
     "carbon": "coal",
     "carbón": "coal",
+    "carbón mineral": "coal",
+
+    "carbon vegetal": "charcoal",
+    "carbón vegetal": "charcoal",
 
     "diamante": "diamond",
     "diamantes": "diamond",
 
-    "hierro": "iron",
-    "oro": "gold",
+    "hierro": "iron_ingot",
+    "lingote de hierro": "iron_ingot",
+
+    "oro": "gold_ingot",
+    "lingote de oro": "gold_ingot",
+
     "esmeralda": "emerald",
+
     "redstone": "redstone",
 
     "lapislazuli": "lapis_lazuli",
@@ -70,19 +96,10 @@ ALIASES = {
     "palos": "stick",
 
     "pico": "pickaxe",
-    "picos": "pickaxe",
-
     "espada": "sword",
-    "espadas": "sword",
-
     "hacha": "axe",
-    "hachas": "axe",
-
     "pala": "shovel",
-    "palas": "shovel",
-
     "azada": "hoe",
-    "azadas": "hoe",
 
     "arco": "bow",
     "flecha": "arrow",
@@ -90,23 +107,17 @@ ALIASES = {
     "cubeta": "bucket",
     "cubo": "bucket",
 
-    "horno": "furnace",
-
     "cofre": "chest",
 
-    "vidrio": "glass",
-
-    "arena": "sand",
-    "grava": "gravel",
     "tierra": "dirt",
+    "grava": "gravel",
 
-    "madera": "planks",
-    "tablones": "planks",
+    "obsidiana": "obsidian",
 
-    "tronco": "log",
+    "netherita": "netherite_ingot",
+    "lingote de netherita": "netherite_ingot",
 
-    "libro": "book",
-    "papel": "paper",
+    "escombros ancestrales": "ancient_debris",
 }
 
 
@@ -115,45 +126,45 @@ ALIASES = {
 # ============================================================
 
 MATERIALS = {
-    "madera": "wood",
-    "madera de roble": "oak",
+
+    "madera": "oak",
+
     "roble": "oak",
 
     "abedul": "birch",
-    "madera de abedul": "birch",
 
     "abeto": "spruce",
-    "madera de abeto": "spruce",
+    "pino": "spruce",
 
     "jungla": "jungle",
-    "madera de jungla": "jungle",
 
     "acacia": "acacia",
-    "madera de acacia": "acacia",
 
     "roble oscuro": "dark_oak",
-    "madera de roble oscuro": "dark_oak",
 
     "manglar": "mangrove",
-    "madera de manglar": "mangrove",
+    "mangle": "mangrove",
 
     "cerezo": "cherry",
-    "madera de cerezo": "cherry",
 
     "bambu": "bamboo",
     "bambú": "bamboo",
 
+    "roble palido": "pale_oak",
+    "roble pálido": "pale_oak",
+
+    "crimson": "crimson",
+    "carmesí": "crimson",
+
+    "warped": "warped",
+    "distorsionado": "warped",
+
     "piedra": "stone",
-    "adoquin": "cobblestone",
-    "adoquín": "cobblestone",
-    "cobblestone": "cobblestone",
 
     "hierro": "iron",
     "oro": "gold",
     "diamante": "diamond",
-
     "netherita": "netherite",
-    "netherite": "netherite",
 }
 
 
@@ -162,11 +173,282 @@ MATERIALS = {
 # ============================================================
 
 TOOLS = {
+
     "pico": "pickaxe",
     "espada": "sword",
     "hacha": "axe",
     "pala": "shovel",
     "azada": "hoe",
+
+}
+
+
+# ============================================================
+# RECETAS DE HORNO
+#
+# minecraft-data Java no guarda todas las recetas de horno
+# dentro del recipes.json de fabricación.
+# ============================================================
+
+FURNACE_RECIPES = {
+
+    # Bloques / materiales
+    "sand": ("glass", "Horno"),
+    "red_sand": ("red_stained_glass", "Horno"),
+
+    "cobblestone": ("stone", "Horno"),
+    "stone": ("smooth_stone", "Horno"),
+
+    "clay_ball": ("brick", "Horno"),
+    "clay": ("terracotta", "Horno"),
+
+    "cactus": ("green_dye", "Horno"),
+    "kelp": ("dried_kelp", "Horno"),
+
+    "wet_sponge": ("sponge", "Horno"),
+
+    "ancient_debris": (
+        "netherite_scrap",
+        "Horno",
+    ),
+
+    "netherrack": (
+        "nether_brick",
+        "Horno",
+    ),
+
+    "quartz_ore": (
+        "quartz",
+        "Horno",
+    ),
+
+    "nether_quartz_ore": (
+        "quartz",
+        "Horno",
+    ),
+
+    "chorus_fruit": (
+        "popped_chorus_fruit",
+        "Horno",
+    ),
+
+    "potato": (
+        "baked_potato",
+        "Horno",
+    ),
+
+    # Minerales
+    "raw_iron": (
+        "iron_ingot",
+        "Horno",
+    ),
+
+    "raw_gold": (
+        "gold_ingot",
+        "Horno",
+    ),
+
+    "raw_copper": (
+        "copper_ingot",
+        "Horno",
+    ),
+
+    "iron_ore": (
+        "iron_ingot",
+        "Horno",
+    ),
+
+    "deepslate_iron_ore": (
+        "iron_ingot",
+        "Horno",
+    ),
+
+    "gold_ore": (
+        "gold_ingot",
+        "Horno",
+    ),
+
+    "deepslate_gold_ore": (
+        "gold_ingot",
+        "Horno",
+    ),
+
+    "copper_ore": (
+        "copper_ingot",
+        "Horno",
+    ),
+
+    "deepslate_copper_ore": (
+        "copper_ingot",
+        "Horno",
+    ),
+
+    "coal_ore": (
+        "coal",
+        "Horno",
+    ),
+
+    "deepslate_coal_ore": (
+        "coal",
+        "Horno",
+    ),
+
+    "diamond_ore": (
+        "diamond",
+        "Horno",
+    ),
+
+    "deepslate_diamond_ore": (
+        "diamond",
+        "Horno",
+    ),
+
+    "emerald_ore": (
+        "emerald",
+        "Horno",
+    ),
+
+    "deepslate_emerald_ore": (
+        "emerald",
+        "Horno",
+    ),
+
+    "lapis_ore": (
+        "lapis_lazuli",
+        "Horno",
+    ),
+
+    "deepslate_lapis_ore": (
+        "lapis_lazuli",
+        "Horno",
+    ),
+
+    "redstone_ore": (
+        "redstone",
+        "Horno",
+    ),
+
+    "deepslate_redstone_ore": (
+        "redstone",
+        "Horno",
+    ),
+
+    # Madera → carbón vegetal
+    "oak_log": ("charcoal", "Horno"),
+    "spruce_log": ("charcoal", "Horno"),
+    "birch_log": ("charcoal", "Horno"),
+    "jungle_log": ("charcoal", "Horno"),
+    "acacia_log": ("charcoal", "Horno"),
+    "dark_oak_log": ("charcoal", "Horno"),
+    "mangrove_log": ("charcoal", "Horno"),
+    "cherry_log": ("charcoal", "Horno"),
+    "pale_oak_log": ("charcoal", "Horno"),
+
+    # Comida
+    "beef": (
+        "cooked_beef",
+        "Horno",
+    ),
+
+    "porkchop": (
+        "cooked_porkchop",
+        "Horno",
+    ),
+
+    "chicken": (
+        "cooked_chicken",
+        "Horno",
+    ),
+
+    "mutton": (
+        "cooked_mutton",
+        "Horno",
+    ),
+
+    "rabbit": (
+        "cooked_rabbit",
+        "Horno",
+    ),
+
+    "cod": (
+        "cooked_cod",
+        "Horno",
+    ),
+
+    "salmon": (
+        "cooked_salmon",
+        "Horno",
+    ),
+}
+
+
+# ============================================================
+# ALTO HORNO
+# ============================================================
+
+BLAST_RECIPES = {
+
+    key: (
+        value[0],
+        "Alto horno",
+    )
+
+    for key, value in FURNACE_RECIPES.items()
+
+    if (
+        key.endswith("_ore")
+        or key.startswith("deepslate_")
+        or key.startswith("raw_")
+        or key == "ancient_debris"
+    )
+}
+
+
+# ============================================================
+# AHUMADOR
+# ============================================================
+
+SMOKER_RECIPES = {
+
+    "beef": (
+        "cooked_beef",
+        "Ahumador",
+    ),
+
+    "porkchop": (
+        "cooked_porkchop",
+        "Ahumador",
+    ),
+
+    "chicken": (
+        "cooked_chicken",
+        "Ahumador",
+    ),
+
+    "mutton": (
+        "cooked_mutton",
+        "Ahumador",
+    ),
+
+    "rabbit": (
+        "cooked_rabbit",
+        "Ahumador",
+    ),
+
+    "cod": (
+        "cooked_cod",
+        "Ahumador",
+    ),
+
+    "salmon": (
+        "cooked_salmon",
+        "Ahumador",
+    ),
+
+    "potato": (
+        "baked_potato",
+        "Ahumador",
+    ),
 }
 
 
@@ -174,42 +456,45 @@ TOOLS = {
 # NORMALIZACIÓN
 # ============================================================
 
-def norm(s: str) -> str:
+def norm(value: str) -> str:
 
-    s = unicodedata.normalize(
+    value = unicodedata.normalize(
         "NFD",
-        str(s).lower().strip(),
+        str(value).lower().strip(),
     )
 
-    s = "".join(
+    value = "".join(
         c
-        for c in s
+        for c in value
         if unicodedata.category(c) != "Mn"
     )
 
-    s = s.replace(
+    value = value.replace(
         "minecraft:",
         "",
     )
 
-    s = re.sub(
+    value = re.sub(
         r"[^a-z0-9_ ]+",
         " ",
-        s,
+        value,
     )
 
     return re.sub(
         r"\s+",
         " ",
-        s,
+        value,
     ).strip()
 
 
 # ============================================================
-# LIMPIAR IDENTIFICADORES
+# ID
 # ============================================================
 
-def clean_id(value):
+def clean_id(
+    value,
+    id_to_name=None,
+):
 
     if value is None:
         return None
@@ -223,27 +508,58 @@ def clean_id(value):
             or value.get("identifier")
         )
 
+    if isinstance(
+        value,
+        (list, tuple),
+    ):
+
+        value = (
+            value[0]
+            if value
+            else None
+        )
+
+    if isinstance(
+        value,
+        int,
+    ):
+
+        if id_to_name:
+            return id_to_name.get(
+                value
+            )
+
+        return None
+
+    if isinstance(
+        value,
+        float,
+    ) and value.is_integer():
+
+        if id_to_name:
+            return id_to_name.get(
+                int(value)
+            )
+
+        return None
+
     if value is None:
         return None
 
-    if isinstance(value, (int, float)):
-        return None
-
-    value = str(value)
-
-    value = value.replace(
+    return str(value).replace(
         "minecraft:",
         "",
-    )
-
-    return value
+    ).strip()
 
 
 # ============================================================
 # DESCARGAR JSON
 # ============================================================
 
-def load_json(url: str, path: Path):
+def load_json(
+    url: str,
+    path: Path,
+):
 
     CACHE.mkdir(
         parents=True,
@@ -252,11 +568,13 @@ def load_json(url: str, path: Path):
 
     if (
         path.exists()
-        and time.time() - path.stat().st_mtime
+        and time.time()
+        - path.stat().st_mtime
         < CACHE_AGE
     ):
 
         try:
+
             return json.loads(
                 path.read_text(
                     encoding="utf-8"
@@ -270,13 +588,13 @@ def load_json(url: str, path: Path):
         url,
         headers={
             "User-Agent":
-                "MinecraftFullGuideBot/1.0"
+                "MinecraftFullGuideBot/2.0"
         },
     )
 
     with urlopen(
         req,
-        timeout=40,
+        timeout=60,
     ) as response:
 
         data = response.read()
@@ -289,13 +607,52 @@ def load_json(url: str, path: Path):
 
 
 # ============================================================
-# NOMBRE DEL ITEM
+# IDIOMA ESPAÑOL
 # ============================================================
 
-def item_name(display, ident):
+def load_language():
 
-    if display:
-        return str(display)
+    try:
+
+        return load_json(
+            LANG_URL,
+            LANG_CACHE,
+        )
+
+    except Exception:
+
+        return {}
+
+
+# ============================================================
+# NOMBRE TRADUCIDO
+# ============================================================
+
+def translated_name(
+    ident,
+    lang,
+):
+
+    ident = str(
+        ident
+    ).replace(
+        "minecraft:",
+        "",
+    )
+
+    keys = (
+        f"item.minecraft.{ident}",
+        f"block.minecraft.{ident}",
+    )
+
+    for key in keys:
+
+        value = lang.get(
+            key
+        )
+
+        if value:
+            return str(value)
 
     return (
         ident
@@ -305,433 +662,154 @@ def item_name(display, ident):
 
 
 # ============================================================
-# INGREDIENTE
+# CANTIDAD
 # ============================================================
 
-def ingredient(value):
+def value_count(value):
 
-    if value is None:
-        return None
+    if isinstance(
+        value,
+        dict,
+    ):
 
-    # --------------------------------------------
-    # Diccionario
-    # --------------------------------------------
-
-    if isinstance(value, dict):
-
-        ident = clean_id(value)
-
-        if not ident:
-            return None
-
-        count = (
+        return int(
             value.get("count")
             or value.get("quantity")
             or value.get("amount")
             or 1
         )
 
-    # --------------------------------------------
-    # String
-    # --------------------------------------------
+    return 1
 
-    elif isinstance(value, str):
 
-        ident = clean_id(value)
+# ============================================================
+# INGREDIENTE
+# ============================================================
 
-        if not ident:
-            return None
+def make_ingredient(
+    value,
+    id_to_name,
+    lang,
+):
 
-        count = 1
+    ident = clean_id(
+        value,
+        id_to_name,
+    )
 
-    else:
+    if not ident:
         return None
 
-    try:
-        count = int(count)
-    except Exception:
-        count = 1
+    if ident == "air":
+        return None
 
     return {
+
         "id": ident,
-        "nombre": (
-            ident
-            .replace("_", " ")
-            .title()
-        ),
-        "cantidad": count,
+
+        "nombre":
+            translated_name(
+                ident,
+                lang,
+            ),
+
+        "cantidad":
+            value_count(
+                value
+            ),
     }
 
 
 # ============================================================
-# EXTRAER INGREDIENTES DE LISTAS
+# CREAR CUADRÍCULA 3x3
 # ============================================================
 
-def extract_ingredients(values):
+def make_grid(
+    shape,
+    id_to_name,
+):
 
-    result = []
-
-    if not isinstance(values, list):
-        return result
-
-    for value in values:
-
-        # Algunas estructuras contienen listas.
-        if isinstance(value, list):
-
-            for nested in value:
-
-                item = ingredient(nested)
-
-                if item:
-                    result.append(item)
-
-        else:
-
-            item = ingredient(value)
-
-            if item:
-                result.append(item)
-
-    return result
-
-
-# ============================================================
-# PATRÓN DE RECETA
-# ============================================================
-
-def recipe_pattern(recipe):
-
-    # ========================================================
-    # FORMATO BEDROCK
-    #
-    # pattern + key
-    # ========================================================
-
-    pattern = recipe.get("pattern")
-
-    if isinstance(
-        pattern,
-        list,
-    ) and pattern:
-
-        key = recipe.get(
-            "key",
-            {},
-        )
-
-        grid = [
-            [None, None, None],
-            [None, None, None],
-            [None, None, None],
-        ]
-
-        height = min(
-            3,
-            len(pattern),
-        )
-
-        width = min(
-            3,
-            max(
-                (
-                    len(row)
-                    for row in pattern
-                    if isinstance(
-                        row,
-                        str,
-                    )
-                ),
-                default=0,
-            ),
-        )
-
-        offset_y = (
-            3 - height
-        ) // 2
-
-        offset_x = (
-            3 - width
-        ) // 2
-
-        for y, row in enumerate(
-            pattern[:3]
-        ):
-
-            if not isinstance(
-                row,
-                str,
-            ):
-                continue
-
-            for x, symbol in enumerate(
-                row[:3]
-            ):
-
-                if symbol in (
-                    "",
-                    " ",
-                    None,
-                ):
-                    continue
-
-                value = key.get(
-                    symbol
-                )
-
-                if isinstance(
-                    value,
-                    list,
-                ):
-
-                    value = (
-                        value[0]
-                        if value
-                        else None
-                    )
-
-                ident = clean_id(
-                    value
-                )
-
-                if ident:
-
-                    grid[
-                        y + offset_y
-                    ][
-                        x + offset_x
-                    ] = ident
-
-        if any(
-            cell
-            for row in grid
-            for cell in row
-        ):
-            return grid
-
-    # ========================================================
-    # FORMATO MINECRAFT-DATA
-    #
-    # inShape
-    # ========================================================
-
-    shape = recipe.get(
-        "inShape"
-    )
-
-    if isinstance(
+    if not isinstance(
         shape,
         list,
-    ) and shape:
+    ):
+        return None
 
-        grid = [
-            [None, None, None],
-            [None, None, None],
-            [None, None, None],
-        ]
+    if not shape:
+        return None
 
-        height = min(
-            3,
-            len(shape),
-        )
-
-        width = min(
-            3,
-            max(
-                (
-                    len(row)
-                    for row in shape
-                    if isinstance(
-                        row,
-                        list,
-                    )
-                ),
-                default=0,
-            ),
-        )
-
-        offset_y = (
-            3 - height
-        ) // 2
-
-        offset_x = (
-            3 - width
-        ) // 2
-
-        for y, row in enumerate(
-            shape[:3]
-        ):
-
-            if not isinstance(
-                row,
-                list,
-            ):
-                continue
-
-            for x, value in enumerate(
-                row[:3]
-            ):
-
-                if value in (
-                    None,
-                    "",
-                    0,
-                    False,
-                ):
-                    continue
-
-                ident = clean_id(
-                    value
-                )
-
-                if ident:
-
-                    grid[
-                        y + offset_y
-                    ][
-                        x + offset_x
-                    ] = ident
-
-        if any(
-            cell
-            for row in grid
-            for cell in row
-        ):
-            return grid
-
-    # ========================================================
-    # FORMATO BEDROCK input
-    # ========================================================
-
-    input_grid = recipe.get(
-        "input"
+    height = min(
+        3,
+        len(shape),
     )
 
-    if isinstance(
-        input_grid,
-        list,
-    ) and input_grid:
-
-        # Si input ya viene como matriz.
-        if any(
-            isinstance(x, list)
-            for x in input_grid
-        ):
-
-            rows = input_grid
-
-            height = min(
-                3,
-                len(rows),
-            )
-
-            width = min(
-                3,
-                max(
-                    (
-                        len(row)
-                        for row in rows
-                        if isinstance(
-                            row,
-                            list,
-                        )
-                    ),
-                    default=0,
-                ),
-            )
-
-            grid = [
-                [None, None, None],
-                [None, None, None],
-                [None, None, None],
-            ]
-
-            offset_y = (
-                3 - height
-            ) // 2
-
-            offset_x = (
-                3 - width
-            ) // 2
-
-            for y, row in enumerate(
-                rows[:3]
-            ):
-
-                if not isinstance(
+    width = min(
+        3,
+        max(
+            (
+                len(row)
+                for row in shape
+                if isinstance(
                     row,
                     list,
-                ):
-                    continue
-
-                for x, value in enumerate(
-                    row[:3]
-                ):
-
-                    ident = clean_id(
-                        value
-                    )
-
-                    if ident:
-
-                        grid[
-                            y + offset_y
-                        ][
-                            x + offset_x
-                        ] = ident
-
-            if any(
-                cell
-                for row in grid
-                for cell in row
-            ):
-                return grid
-
-    # ========================================================
-    # RECETA SIN FORMA
-    #
-    # Colocamos ingredientes en una
-    # cuadrícula 3x3.
-    # ========================================================
-
-    ingredients = (
-        recipe.get("ingredients")
-        or recipe.get("input")
-        or []
+                )
+            ),
+            default=0,
+        ),
     )
 
-    flat = extract_ingredients(
-        ingredients
-    )
+    if not width:
+        return None
 
-    if flat:
+    grid = [
+        [None, None, None],
+        [None, None, None],
+        [None, None, None],
+    ]
 
-        grid = [
-            [None, None, None],
-            [None, None, None],
-            [None, None, None],
-        ]
+    offset_y = (
+        3 - height
+    ) // 2
 
-        positions = [
-            (1, 1),
-            (0, 1),
-            (1, 0),
-            (1, 2),
-            (2, 1),
-            (0, 0),
-            (0, 2),
-            (2, 0),
-            (2, 2),
-        ]
+    offset_x = (
+        3 - width
+    ) // 2
 
-        for position, item in zip(
-            positions,
-            flat[:9],
+    for y, row in enumerate(
+        shape[:3]
+    ):
+
+        if not isinstance(
+            row,
+            list,
+        ):
+            continue
+
+        for x, value in enumerate(
+            row[:3]
         ):
 
-            y, x = position
+            ident = clean_id(
+                value,
+                id_to_name,
+            )
 
-            grid[y][x] = item["id"]
+            if (
+                ident
+                and ident != "air"
+            ):
+
+                grid[
+                    y + offset_y
+                ][
+                    x + offset_x
+                ] = ident
+
+    if any(
+        cell
+        for row in grid
+        for cell in row
+    ):
 
         return grid
 
@@ -739,267 +817,191 @@ def recipe_pattern(recipe):
 
 
 # ============================================================
-# RECETAS
+# RECETAS DE CRAFTEO
 # ============================================================
 
-def build_recipes(raw):
-
-    if isinstance(
-        raw,
-        dict,
-    ):
-
-        recipes = raw.get(
-            "recipes"
-        )
-
-        if recipes is None:
-
-            recipes = raw.get(
-                "data"
-            )
-
-        if recipes is None:
-            recipes = raw
-
-    else:
-        recipes = raw
+def build_crafting_recipes(
+    raw,
+    id_to_name,
+    lang,
+):
 
     result = {}
 
-    # ========================================================
-    # NUEVO FORMATO BEDROCK:
-    #
-    # {
-    #   "123": {
-    #       "type": "...",
-    #       "name": "...",
-    #       "ingredients": [...],
-    #       "input": [...],
-    #       "output": [...]
-    #   }
-    # }
-    # ========================================================
-
-    if isinstance(
-        recipes,
-        dict,
-    ):
-
-        iterator = []
-
-        for key, value in recipes.items():
-
-            if isinstance(
-                value,
-                list,
-            ):
-
-                for recipe in value:
-
-                    if isinstance(
-                        recipe,
-                        dict,
-                    ):
-                        iterator.append(
-                            recipe
-                        )
-
-            elif isinstance(
-                value,
-                dict,
-            ):
-
-                iterator.append(
-                    value
-                )
-
-        recipes = iterator
-
     if not isinstance(
-        recipes,
-        list,
+        raw,
+        dict,
     ):
         return result
 
-    # ========================================================
-    # PROCESAR RECETAS
-    # ========================================================
-
-    for recipe in recipes:
+    for recipes in raw.values():
 
         if not isinstance(
-            recipe,
-            dict,
-        ):
-            continue
-
-        recipe_type = str(
-            recipe.get("type")
-            or recipe.get(
-                "recipeType"
-            )
-            or ""
-        ).lower()
-
-        # Ignorar hornos, cortapiedras,
-        # mesas de cartografía, etc.
-        #
-        # Aquí solamente queremos crafteo.
-        if recipe_type:
-
-            if (
-                "crafting" not in
-                recipe_type
-                and recipe_type
-                not in (
-                    "crafting_table",
-                    "crafting_table_shapeless",
-                )
-            ):
-                continue
-
-        # ====================================================
-        # RESULTADO
-        # ====================================================
-
-        output = (
-            recipe.get("result")
-            or recipe.get("output")
-        )
-
-        result_items = []
-
-        if isinstance(
-            output,
+            recipes,
             list,
         ):
 
-            result_items = (
-                extract_ingredients(
-                    output
-                )
+            recipes = [
+                recipes
+            ]
+
+        for recipe in recipes:
+
+            if not isinstance(
+                recipe,
+                dict,
+            ):
+                continue
+
+            output = make_ingredient(
+                recipe.get("result"),
+                id_to_name,
+                lang,
             )
 
-        elif output is not None:
+            if not output:
+                continue
 
-            item = ingredient(
-                output
+            grid = make_grid(
+                recipe.get("inShape"),
+                id_to_name,
             )
 
-            if item:
-                result_items = [
-                    item
-                ]
+            ingredients = []
 
-        # Algunos datos usan:
-        # resultItem
-        if not result_items:
+            # ------------------------------------------------
+            # RECETA CON FORMA
+            # ------------------------------------------------
 
-            fallback = (
-                recipe.get(
-                    "resultItem"
-                )
-            )
+            if grid:
 
-            item = ingredient(
-                fallback
-            )
+                for row in grid:
 
-            if item:
-                result_items = [
-                    item
-                ]
+                    for ident in row:
 
-        if not result_items:
-            continue
+                        if ident:
 
-        output_item = (
-            result_items[0]
-        )
+                            ingredients.append({
 
-        ident = output_item["id"]
+                                "id": ident,
 
-        amount = output_item[
-            "cantidad"
-        ]
+                                "nombre":
+                                    translated_name(
+                                        ident,
+                                        lang,
+                                    ),
 
-        # ====================================================
-        # PATRÓN
-        # ====================================================
+                                "cantidad": 1,
 
-        pattern = recipe_pattern(
-            recipe
-        )
+                            })
 
-        if not pattern:
-            continue
+            # ------------------------------------------------
+            # RECETA SIN FORMA
+            # ------------------------------------------------
 
-        # ====================================================
-        # CONTAR INGREDIENTES
-        # ====================================================
+            else:
 
-        counts = {}
+                for value in recipe.get(
+                    "ingredients",
+                    [],
+                ):
 
-        for row in pattern:
-
-            for item_id in row:
-
-                if item_id:
-
-                    counts[item_id] = (
-                        counts.get(
-                            item_id,
-                            0,
-                        )
-                        + 1
+                    ingredient = make_ingredient(
+                        value,
+                        id_to_name,
+                        lang,
                     )
 
-        ingredients = []
+                    if ingredient:
 
-        for item_id, count in (
-            counts.items()
-        ):
-
-            ingredients.append(
-                {
-                    "id": item_id,
-                    "nombre": (
-                        item_id
-                        .replace(
-                            "_",
-                            " ",
+                        ingredients.append(
+                            ingredient
                         )
-                        .title()
-                    ),
-                    "cantidad": count,
-                }
-            )
 
-        # ====================================================
-        # GUARDAR
-        # ====================================================
+                if ingredients:
 
-        if ident not in result:
+                    grid = [
+                        [None, None, None],
+                        [None, None, None],
+                        [None, None, None],
+                    ]
 
-            result[ident] = {
-                "mesa": (
-                    "Mesa de crafteo"
-                ),
-                "patron": pattern,
-                "ingredientes": (
-                    ingredients
-                ),
-                "resultado_cantidad": (
-                    amount
-                ),
+                    positions = [
+
+                        (1, 1),
+                        (0, 1),
+                        (1, 0),
+                        (1, 2),
+                        (2, 1),
+
+                        (0, 0),
+                        (0, 2),
+                        (2, 0),
+                        (2, 2),
+
+                    ]
+
+                    for (
+                        position,
+                        ingredient,
+                    ) in zip(
+                        positions,
+                        ingredients[:9],
+                    ):
+
+                        grid[
+                            position[0]
+                        ][
+                            position[1]
+                        ] = ingredient["id"]
+
+            if not grid:
+                continue
+
+            data = {
+
+                "tipo":
+                    "crafting",
+
+                "mesa":
+                    "Mesa de crafteo",
+
+                "estacion":
+                    "Mesa de crafteo",
+
+                "patron":
+                    grid,
+
+                "ingredientes":
+                    ingredients,
+
+                "resultado_cantidad":
+                    output["cantidad"],
+
             }
+
+            ident = output["id"]
+
+            if ident not in result:
+
+                result[ident] = data
+
+            else:
+
+                result[
+                    ident
+                ].setdefault(
+                    "alternativas",
+                    [],
+                ).append(
+                    data
+                )
 
     return result
 
 
 # ============================================================
-# CONSTRUIR BASE DE ITEMS
+# CONSTRUIR BASE COMPLETA
 # ============================================================
 
 def build():
@@ -1014,45 +1016,23 @@ def build():
         RECIPES_CACHE,
     )
 
-    # ========================================================
-    # ITEMS
-    # ========================================================
+    lang = load_language()
 
-    if isinstance(
-        raw_items,
-        dict,
-    ):
-
-        items = (
-            raw_items.get(
-                "items"
-            )
-            or raw_items.get(
-                "data"
-            )
-            or []
+    items_list = (
+        raw_items
+        if isinstance(
+            raw_items,
+            list,
         )
-
-    else:
-        items = raw_items
-
-    recipes = build_recipes(
-        raw_recipes
+        else raw_items.get(
+            "items",
+            [],
+        )
     )
 
-    base = {}
+    id_to_name = {}
 
-    if not isinstance(
-        items,
-        list,
-    ):
-        return base
-
-    # ========================================================
-    # ITEMS
-    # ========================================================
-
-    for data in items:
+    for data in items_list:
 
         if not isinstance(
             data,
@@ -1060,120 +1040,123 @@ def build():
         ):
             continue
 
-        ident = (
-            data.get("name")
-            or data.get("id")
-            or data.get(
-                "identifier"
-            )
-        )
-
-        if not ident:
-            continue
-
         ident = str(
-            ident
+            data.get("name")
+            or ""
         ).replace(
             "minecraft:",
             "",
         )
 
-        # No mostrar air.
-        if ident == "air":
+        if not ident:
             continue
 
-        display = (
-            data.get(
-                "displayName"
-            )
-            or data.get(
-                "display_name"
-            )
+        try:
+
+            id_to_name[
+                int(
+                    data["id"]
+                )
+            ] = ident
+
+        except Exception:
+            pass
+
+    crafting_recipes = (
+        build_crafting_recipes(
+            raw_recipes,
+            id_to_name,
+            lang,
+        )
+    )
+
+    items = {}
+
+    # ========================================================
+    # TODOS LOS ITEMS
+    # ========================================================
+
+    for data in items_list:
+
+        if not isinstance(
+            data,
+            dict,
+        ):
+            continue
+
+        ident = str(
+            data.get("name")
+            or ""
+        ).replace(
+            "minecraft:",
+            "",
         )
 
-        durability = (
-            data.get(
-                "maxDurability"
-            )
-            or data.get(
-                "max_durability"
-            )
-            or data.get(
-                "durability"
-            )
+        if (
+            not ident
+            or ident == "air"
+        ):
+            continue
+
+        name = translated_name(
+            ident,
+            lang,
         )
 
-        damage = (
-            data.get("damage")
-            or data.get(
-                "attackDamage"
-            )
-            or data.get(
-                "attack_damage"
-            )
-        )
+        items[ident] = {
 
-        speed = (
-            data.get(
-                "miningSpeed"
-            )
-            or data.get(
-                "mining_speed"
-            )
-        )
-
-        aliases = [
-            norm(ident),
-        ]
-
-        if display:
-            aliases.append(
-                norm(display)
-            )
-
-        base[ident] = {
-
-            "id": ident,
-
-            "nombre": item_name(
-                display,
+            "id":
                 ident,
-            ),
+
+            "nombre":
+                name,
 
             "identificador":
                 f"minecraft:{ident}",
 
-            "aliases": aliases,
+            "aliases": [
+                norm(ident),
+                norm(name),
+            ],
 
             "categoria":
                 "Objeto",
 
-            "descripcion": (
-                "Objeto de Minecraft "
-                f"identificado como "
-                f"{ident}."
-            ),
+            "descripcion":
+                f"Objeto de Minecraft: {name}.",
 
-            "danio": damage,
+            "danio":
+                data.get(
+                    "damage"
+                )
+                or data.get(
+                    "attackDamage"
+                ),
 
             "velocidad_mineria":
-                speed,
+                data.get(
+                    "miningSpeed"
+                )
+                or data.get(
+                    "mining_speed"
+                ),
 
             "durabilidad":
-                durability,
+                data.get(
+                    "maxDurability"
+                )
+                or data.get(
+                    "max_durability"
+                ),
 
-            "stack_size": (
+            "stack_size":
                 data.get(
                     "stackSize"
                 )
-                or data.get(
-                    "stack_size"
-                )
-                or 64
-            ),
+                or 64,
 
             "receta":
-                recipes.get(
+                crafting_recipes.get(
                     ident
                 ),
 
@@ -1182,65 +1165,174 @@ def build():
                     "variations"
                 )
                 or [],
+
         }
 
     # ========================================================
-    # ALIASES BÁSICOS
+    # ALIAS BÁSICOS
     # ========================================================
 
     for alias, ident in (
         ALIASES.items()
     ):
 
-        if ident in base:
+        if ident in items:
 
-            base[ident][
+            items[ident][
                 "aliases"
             ].append(
                 norm(alias)
             )
 
     # ========================================================
-    # ALIASES:
+    # HERRAMIENTAS COMPUESTAS
     #
     # pico de diamante
     # espada de hierro
     # etc.
     # ========================================================
 
-    for material_es, material_id in (
-        MATERIALS.items()
-    ):
+    for (
+        material_es,
+        material_id,
+    ) in MATERIALS.items():
 
-        for tool_es, tool_id in (
-            TOOLS.items()
-        ):
+        for (
+            tool_es,
+            tool_id,
+        ) in TOOLS.items():
 
             ident = (
                 f"{material_id}_"
                 f"{tool_id}"
             )
 
-            if ident not in base:
+            if ident not in items:
                 continue
 
-            aliases = [
-                f"{tool_es} de "
-                f"{material_es}",
+            items[ident][
+                "aliases"
+            ].extend([
 
-                f"{tool_es} "
-                f"{material_es}",
-            ]
+                norm(
+                    f"{tool_es} "
+                    f"de "
+                    f"{material_es}"
+                ),
 
-            for alias in aliases:
+                norm(
+                    f"{tool_es} "
+                    f"{material_es}"
+                ),
 
-                base[ident][
-                    "aliases"
-                ].append(
-                    norm(alias)
-                )
+            ])
 
-    return base
+    # ========================================================
+    # RECETAS ESPECIALES
+    # ========================================================
+
+    special_recipes = {}
+
+    special_recipes.update(
+        FURNACE_RECIPES
+    )
+
+    special_recipes.update(
+        BLAST_RECIPES
+    )
+
+    special_recipes.update(
+        SMOKER_RECIPES
+    )
+
+    for (
+        input_id,
+        (
+            output_id,
+            station,
+        ),
+    ) in special_recipes.items():
+
+        if input_id not in items:
+            continue
+
+        if output_id not in items:
+            continue
+
+        special_recipe = {
+
+            "tipo":
+                "smelting",
+
+            "mesa":
+                station,
+
+            "estacion":
+                station,
+
+            "entrada":
+                input_id,
+
+            "patron": [
+
+                [None, None, None],
+                [None, None, None],
+                [None, None, None],
+
+            ],
+
+            "ingredientes": [
+
+                {
+
+                    "id":
+                        input_id,
+
+                    "nombre":
+                        items[input_id][
+                            "nombre"
+                        ],
+
+                    "cantidad":
+                        1,
+
+                }
+
+            ],
+
+            "resultado_cantidad":
+                1,
+
+        }
+
+        special_recipe[
+            "patron"
+        ][1][1] = input_id
+
+        # Si no tiene crafteo, esta pasa a ser
+        # la receta principal.
+        if not items[output_id].get(
+            "receta"
+        ):
+
+            items[output_id][
+                "receta"
+            ] = special_recipe
+
+        else:
+
+            # Si tiene varias formas de obtenerse,
+            # conservamos todas.
+            items[output_id][
+                "receta"
+            ].setdefault(
+                "alternativas",
+                [],
+            ).append(
+                special_recipe
+            )
+
+    return items
 
 
 # ============================================================
@@ -1254,15 +1346,21 @@ ITEMS = None
 # BUSCAR HERRAMIENTA COMPUESTA
 # ============================================================
 
-def compound_lookup(query):
+def compound_lookup(
+    query,
+):
 
     if not ITEMS:
         return None
 
     words = [
+
         word
+
         for word in query.split()
+
         if word not in {
+
             "de",
             "del",
             "la",
@@ -1271,7 +1369,9 @@ def compound_lookup(query):
             "las",
             "un",
             "una",
+
         }
+
     ]
 
     if len(words) < 2:
@@ -1283,11 +1383,13 @@ def compound_lookup(query):
     for word in words:
 
         if word in TOOLS:
+
             tool_id = TOOLS[
                 word
             ]
 
         if word in MATERIALS:
+
             material_id = MATERIALS[
                 word
             ]
@@ -1312,7 +1414,9 @@ def compound_lookup(query):
 # BUSCAR ITEM
 # ============================================================
 
-def buscar_item(consulta):
+def buscar_item(
+    consulta,
+):
 
     global ITEMS
 
@@ -1328,7 +1432,7 @@ def buscar_item(consulta):
         return None
 
     # ========================================================
-    # 1. ALIAS EXACTO
+    # ALIAS EXACTO
     # ========================================================
 
     if query in ALIASES:
@@ -1338,23 +1442,23 @@ def buscar_item(consulta):
         ]
 
         if ident in ITEMS:
+
             return ITEMS[
                 ident
             ]
 
     # ========================================================
-    # 2. ID EXACTO
+    # ID EXACTO
     # ========================================================
 
     if query in ITEMS:
+
         return ITEMS[
             query
         ]
 
     # ========================================================
-    # 3. HERRAMIENTAS COMPUESTAS
-    #
-    # pico de diamante
+    # COMPUESTO
     # ========================================================
 
     item = compound_lookup(
@@ -1365,83 +1469,102 @@ def buscar_item(consulta):
         return item
 
     # ========================================================
-    # 4. ALIAS EXACTO
+    # NOMBRE EXACTO
     # ========================================================
 
     for item in ITEMS.values():
 
-        for alias in item.get(
-            "aliases",
-            [],
+        if query == norm(
+            item["id"]
         ):
 
-            if norm(alias) == query:
-                return item
+            return item
+
+        if query == norm(
+            item["nombre"]
+        ):
+
+            return item
+
+        aliases = {
+
+            norm(alias)
+
+            for alias in item.get(
+                "aliases",
+                [],
+            )
+
+        }
+
+        if query in aliases:
+
+            return item
 
     # ========================================================
-    # 5. BÚSQUEDA POR PALABRAS
+    # BÚSQUEDA POR PALABRAS
     #
-    # MUY IMPORTANTE:
-    #
-    # No devolvemos cualquier cosa.
+    # Solo devuelve coincidencias si TODAS las palabras
+    # importantes aparecen.
     # ========================================================
-
-    stopwords = {
-        "de",
-        "del",
-        "la",
-        "el",
-        "los",
-        "las",
-        "un",
-        "una",
-    }
 
     words = [
-        word
-        for word in query.split()
-        if word not in stopwords
-    ]
 
-    if not words:
-        return None
+        word
+
+        for word in query.split()
+
+        if word not in {
+
+            "de",
+            "del",
+            "la",
+            "el",
+            "los",
+            "las",
+            "un",
+            "una",
+
+        }
+
+    ]
 
     best = None
     best_score = 0
 
     for item in ITEMS.values():
 
+        tokens = set()
+
         names = [
-            norm(
-                item.get(
-                    "id",
-                    "",
-                )
+
+            item.get(
+                "id",
+                ""
             ),
 
-            norm(
-                item.get(
-                    "nombre",
-                    "",
-                )
+            item.get(
+                "nombre",
+                ""
             ),
+
         ]
 
         names.extend(
-            norm(alias)
-            for alias in item.get(
+            item.get(
                 "aliases",
                 [],
             )
-            if alias
         )
-
-        tokens = set()
 
         for name in names:
 
-            tokens.update(
+            normalized = norm(
                 name
+            )
+
+            tokens.update(
+                normalized
                 .replace(
                     "_",
                     " ",
@@ -1449,39 +1572,37 @@ def buscar_item(consulta):
                 .split()
             )
 
-        score = 0
+        if not words:
+            continue
 
-        for word in words:
-
-            if word in tokens:
-                score += 5
-
-        # Todas las palabras tienen
-        # que aparecer.
-        if all(
+        if not all(
             word in tokens
             for word in words
         ):
+            continue
 
-            score += 20
+        score = sum(
+            5
+            for word in words
+            if word in tokens
+        )
+
+        score += 20
 
         if score > best_score:
 
-            best = item
             best_score = score
+            best = item
 
-    # ========================================================
-    # NO INVENTAR RESULTADOS
-    # ========================================================
+    if best_score < 20:
 
-    if best_score <= 0:
         return None
 
     return best
 
 
 # ============================================================
-# OBTENER TODOS LOS ITEMS
+# TODOS LOS ITEMS
 # ============================================================
 
 def obtener_items():
@@ -1489,6 +1610,44 @@ def obtener_items():
     global ITEMS
 
     if ITEMS is None:
+
         ITEMS = build()
 
     return ITEMS
+
+
+# ============================================================
+# ESTADÍSTICAS
+# ============================================================
+
+def obtener_estadisticas():
+
+    items = obtener_items()
+
+    con_receta = sum(
+
+        1
+
+        for item in items.values()
+
+        if item.get(
+            "receta"
+        )
+
+    )
+
+    return {
+
+        "total_items":
+            len(items),
+
+        "con_receta":
+            con_receta,
+
+        "sin_receta":
+            len(items) - con_receta,
+
+        "version":
+            "Minecraft Java 26.1.2",
+
+    }
