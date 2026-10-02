@@ -2,7 +2,9 @@ from telegram import Update
 from telegram.ext import ContextTypes
 
 from datos.items import buscar_item
-from core.generador_crafteo import generar_imagen_crafteo
+from core.generador_crafteo import (
+    generar_imagen_crafteo,
+)
 
 
 async def comando_item(
@@ -13,23 +15,37 @@ async def comando_item(
     if not context.args:
 
         await update.message.reply_text(
+
             "🔎 Escribe el nombre de un objeto.\n\n"
-            "Ejemplo:\n"
-            "/item pico de diamante"
+
+            "Ejemplos:\n"
+
+            "/item pico de diamante\n"
+            "/item cristal\n"
+            "/item hierro"
+
         )
 
         return
 
-    consulta = " ".join(context.args)
+    consulta = " ".join(
+        context.args
+    )
 
-    item = buscar_item(consulta)
+    item = buscar_item(
+        consulta
+    )
 
     if item is None:
 
         await update.message.reply_text(
-            f"❌ No encontré ningún objeto llamado "
-            f"\"{consulta}\".\n\n"
-            "Comprueba el nombre e inténtalo nuevamente."
+
+            f"❌ No encontré ningún objeto "
+            f"llamado «{consulta}».\n\n"
+
+            "Puedes usar el nombre en español "
+            "o el identificador de Minecraft."
+
         )
 
         return
@@ -38,81 +54,133 @@ async def comando_item(
     # INFORMACIÓN
     # ========================================================
 
-    nombre = item["nombre"]
-    identificador = item["identificador"]
-    categoria = item["categoria"]
-    descripcion = item["descripcion"]
+    nombre = item[
+        "nombre"
+    ]
+
+    identificador = item[
+        "identificador"
+    ]
+
+    categoria = item[
+        "categoria"
+    ]
+
+    descripcion = item[
+        "descripcion"
+    ]
 
     texto = (
-        f"⛏️ <b>{nombre.upper()}</b>\n\n"
+
+        f"⛏️ <b>{nombre}</b>\n\n"
+
         f"🆔 <b>Identificador:</b> "
-        f"<code>{identificador}</code>\n\n"
-        f"📦 <b>Categoría:</b> {categoria}\n\n"
-        f"📖 <b>Información:</b>\n"
-        f"{descripcion}\n"
+        f"<code>{identificador}</code>\n"
+
+        f"📦 <b>Categoría:</b> "
+        f"{categoria}\n\n"
+
+        f"📖 <b>Información:</b> "
+        f"{descripcion}"
+
     )
 
     # ========================================================
     # DAÑO
     # ========================================================
 
-    if item.get("danio") is not None:
+    if item.get(
+        "danio"
+    ) is not None:
 
         texto += (
+
             f"\n⚔️ <b>Daño:</b> "
             f"{item['danio']}"
+
         )
 
     # ========================================================
-    # VELOCIDAD DE MINERÍA
+    # VELOCIDAD
     # ========================================================
 
-    if item.get("velocidad_mineria") is not None:
+    if item.get(
+        "velocidad_mineria"
+    ) is not None:
 
         texto += (
+
             f"\n⛏️ <b>Velocidad de minería:</b> "
             f"{item['velocidad_mineria']}"
+
         )
 
     # ========================================================
     # DURABILIDAD
     # ========================================================
 
-    if item.get("durabilidad") is not None:
+    if item.get(
+        "durabilidad"
+    ) is not None:
 
         texto += (
+
             f"\n🛠️ <b>Durabilidad:</b> "
             f"{item['durabilidad']}"
+
         )
 
     # ========================================================
-    # CRAFTEO
+    # RECETA
     # ========================================================
 
-    receta = item.get("receta")
+    receta = item.get(
+        "receta"
+    )
 
-    if receta is None:
+    if not receta:
 
         texto += (
-            "\n\n❌ <b>Crafteo:</b> "
-            "No tiene crafteo."
+
+            "\n\n❌ <b>Obtención:</b> "
+            "No tiene receta de fabricación "
+            "registrada."
+
         )
 
         await update.message.reply_text(
+
             texto,
+
             parse_mode="HTML",
+
         )
 
         return
 
-    mesa = receta.get(
-        "mesa",
-        "Mesa de crafteo",
+    estacion = (
+
+        receta.get(
+            "estacion"
+        )
+
+        or
+
+        receta.get(
+            "mesa"
+        )
+
+        or
+
+        "Mesa de crafteo"
+
     )
 
     texto += (
-        f"\n\n🧱 <b>Crafteo:</b>\n"
-        f"🏭 Mesa: {mesa}"
+
+        f"\n\n🧱 <b>Obtención:</b> "
+        f"{estacion}"
+
     )
 
     # ========================================================
@@ -120,38 +188,38 @@ async def comando_item(
     # ========================================================
 
     ingredientes = receta.get(
-        "ingredientes",
-        []
-    )
+        "ingredientes"
+    ) or []
 
     if ingredientes:
 
-        texto += "\n"
+        texto += (
+            "\n\n🧩 <b>Ingredientes:</b>"
+        )
 
         for ingrediente in ingredientes:
 
             texto += (
-                f"\n• {ingrediente['cantidad']}x "
+
+                f"\n• "
+                f"{ingrediente['cantidad']}× "
                 f"{ingrediente['nombre']}"
+
             )
 
     # ========================================================
-    # GENERAR IMAGEN
+    # IMAGEN
     # ========================================================
+
+    imagen = None
 
     try:
 
-        imagen = generar_imagen_crafteo(item)
-
-        if imagen:
-
-            await update.message.reply_photo(
-                photo=imagen,
-                caption=texto,
-                parse_mode="HTML",
+        imagen = (
+            generar_imagen_crafteo(
+                item
             )
-
-            return
+        )
 
     except Exception as error:
 
@@ -160,11 +228,24 @@ async def comando_item(
             error,
         )
 
-    # ========================================================
-    # SI NO SE PUDO GENERAR IMAGEN
-    # ========================================================
+    if imagen:
 
-    await update.message.reply_text(
-        texto,
-        parse_mode="HTML",
-    )
+        await update.message.reply_photo(
+
+            photo=imagen,
+
+            caption=texto,
+
+            parse_mode="HTML",
+
+        )
+
+    else:
+
+        await update.message.reply_text(
+
+            texto,
+
+            parse_mode="HTML",
+
+        )
