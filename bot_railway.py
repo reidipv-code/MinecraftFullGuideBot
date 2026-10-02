@@ -1,7 +1,10 @@
-import os
+# bot_railway.py
+
 import logging
+import os
 
 from dotenv import load_dotenv
+
 from telegram import Update
 from telegram.ext import (
     Application,
@@ -12,138 +15,123 @@ from telegram.ext import (
 )
 
 from comandos.items import comando_item
+from comandos.lang import comando_lang
 
-
-# ============================================================
-# CONFIGURACIÓN
-# ============================================================
 
 load_dotenv()
 
 TOKEN = os.getenv("BOT_TOKEN")
 
 
-# ============================================================
-# LOGGING
-# ============================================================
-
 logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    format=(
+        "%(asctime)s - "
+        "%(name)s - "
+        "%(levelname)s - "
+        "%(message)s"
+    ),
     level=logging.INFO,
 )
 
 logger = logging.getLogger(__name__)
 
 
-# ============================================================
-# /START
-# ============================================================
-
 async def start(
     update: Update,
     context: ContextTypes.DEFAULT_TYPE,
 ):
+    if not update.message:
+        return
 
     await update.message.reply_text(
-        "⛏️ ¡Bienvenido a MinecraftFullGuideBot!\n\n"
+        "⛏️ ¡Bienvenido a "
+        "MinecraftFullGuideBot!\n\n"
         "📚 Tu guía completa de Minecraft.\n\n"
-        "Usa /help para ver los comandos disponibles."
+        "🔨 Usa /item para consultar "
+        "objetos y recetas.\n"
+        "🌐 Usa /lang para cambiar el idioma.\n\n"
+        "Ejemplos:\n"
+        "/item pico de diamante\n"
+        "/item horno\n"
+        "/item cristal\n"
+        "/lang english"
     )
 
-
-# ============================================================
-# /HELP
-# ============================================================
 
 async def help_command(
     update: Update,
     context: ContextTypes.DEFAULT_TYPE,
 ):
+    if not update.message:
+        return
 
     await update.message.reply_text(
-        "📖 Comandos disponibles:\n\n"
-        "/start - Iniciar el bot\n"
-        "/help - Mostrar ayuda\n"
-        "/item <nombre> - Buscar información de un objeto\n\n"
-        "Ejemplos:\n"
+        "📖 <b>Comandos disponibles</b>\n\n"
+        "/start — Iniciar el bot\n"
+        "/help — Mostrar ayuda\n"
+        "/item &lt;nombre&gt; — "
+        "Buscar un objeto\n"
+        "/lang &lt;idioma&gt; — "
+        "Cambiar idioma\n\n"
+        "<b>Ejemplos:</b>\n"
         "/item pico de diamante\n"
         "/item espada de diamante\n"
         "/item mesa de crafteo\n"
-        "/item bedrock"
+        "/item horno\n"
+        "/item cristal\n"
+        "/lang spanish\n"
+        "/lang english\n"
+        "/lang japanese",
+        parse_mode="HTML",
     )
 
-
-# ============================================================
-# COMANDO DESCONOCIDO
-# ============================================================
 
 async def comando_desconocido(
     update: Update,
     context: ContextTypes.DEFAULT_TYPE,
 ):
-
     if not update.message:
         return
 
     texto = update.message.text or ""
-
-    # --------------------------------------------------------
-    # Solo procesar mensajes que realmente sean comandos.
-    # --------------------------------------------------------
 
     if not texto.startswith("/"):
         return
 
     comando = texto.split()[0]
 
-    # Quitar @nombre_del_bot si se utiliza:
-    #
-    # /pepito@MinecraftFullGuideBot
-    #
     if "@" in comando:
         comando = comando.split("@")[0]
 
     await update.message.reply_text(
         f"❌ El comando {comando} no existe.\n\n"
-        "📖 Usa /help para ver los comandos disponibles."
+        "📖 Usa /help para ver los comandos."
     )
 
-
-# ============================================================
-# MANEJADOR DE ERRORES
-# ============================================================
 
 async def error_handler(
     update: object,
     context: ContextTypes.DEFAULT_TYPE,
 ):
-
     logger.error(
         "Error durante la ejecución:",
         exc_info=context.error,
     )
 
 
-# ============================================================
-# MAIN
-# ============================================================
-
 def main():
-
     if not TOKEN:
         raise RuntimeError(
-            "No se encontró BOT_TOKEN en las variables de entorno."
+            "No se encontró BOT_TOKEN "
+            "en las variables de entorno."
         )
 
     application = (
-        Application.builder()
+        Application
+        .builder()
         .token(TOKEN)
         .build()
     )
-
-    # --------------------------------------------------------
-    # COMANDOS EXISTENTES
-    # --------------------------------------------------------
 
     application.add_handler(
         CommandHandler(
@@ -166,14 +154,12 @@ def main():
         )
     )
 
-    # --------------------------------------------------------
-    # COMANDOS DESCONOCIDOS
-    #
-    # IMPORTANTE:
-    # Este handler va DESPUÉS de los comandos conocidos.
-    # Así /start, /help y /item funcionan normalmente,
-    # mientras que cualquier otro comando llega aquí.
-    # --------------------------------------------------------
+    application.add_handler(
+        CommandHandler(
+            "lang",
+            comando_lang,
+        )
+    )
 
     application.add_handler(
         MessageHandler(
@@ -181,10 +167,6 @@ def main():
             comando_desconocido,
         )
     )
-
-    # --------------------------------------------------------
-    # ERRORES
-    # --------------------------------------------------------
 
     application.add_error_handler(
         error_handler
@@ -194,18 +176,10 @@ def main():
         "MinecraftFullGuideBot iniciado."
     )
 
-    # --------------------------------------------------------
-    # POLLING
-    # --------------------------------------------------------
-
     application.run_polling(
         allowed_updates=Update.ALL_TYPES
     )
 
-
-# ============================================================
-# EJECUCIÓN
-# ============================================================
 
 if __name__ == "__main__":
     main()
