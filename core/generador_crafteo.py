@@ -9,141 +9,1091 @@ from urllib.request import Request, urlopen
 
 from PIL import Image, ImageDraw, ImageFont
 
+
 logger = logging.getLogger(__name__)
-VERSION = "1.21.4"
-CACHE = Path("/tmp/minecraft_fullguide_assets")
-JAR = CACHE / f"client-{VERSION}.jar"
-MANIFEST = "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json"
-GUI = "assets/minecraft/textures/gui/container/crafting_table.png"
 
 
-def download(url, path):
-    CACHE.mkdir(parents=True, exist_ok=True)
-    req = Request(url, headers={"User-Agent": "MinecraftFullGuideBot/1.0"})
-    with urlopen(req, timeout=60) as r: data = r.read()
-    path.write_bytes(data)
+# ============================================================
+# VERSION
+# ============================================================
 
+VERSION = "26.1.2"
+
+CACHE = Path(
+    "/tmp/minecraft_fullguide_assets"
+)
+
+JAR = CACHE / (
+    f"client-{VERSION}.jar"
+)
+
+MANIFEST = (
+    "https://piston-meta.mojang.com/"
+    "mc/game/version_manifest_v2.json"
+)
+
+
+# ============================================================
+# TAMAÑO
+# ============================================================
+
+ANCHO = 1200
+ALTO = 760
+
+
+# ============================================================
+# DESCARGA
+# ============================================================
+
+def download(
+    url,
+    path,
+):
+
+    CACHE.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+
+    req = Request(
+        url,
+        headers={
+            "User-Agent":
+                "MinecraftFullGuideBot/2.0"
+        },
+    )
+
+    with urlopen(
+        req,
+        timeout=90,
+    ) as response:
+
+        data = response.read()
+
+    path.write_bytes(
+        data
+    )
+
+
+# ============================================================
+# CLIENTE VANILLA
+# ============================================================
 
 def ensure_client():
-    if JAR.exists() and JAR.stat().st_size > 1_000_000: return
-    req = Request(MANIFEST, headers={"User-Agent": "MinecraftFullGuideBot/1.0"})
-    with urlopen(req, timeout=30) as r: manifest = json.loads(r.read().decode())
-    version_url = next(v["url"] for v in manifest["versions"] if v["id"] == VERSION)
-    req = Request(version_url, headers={"User-Agent": "MinecraftFullGuideBot/1.0"})
-    with urlopen(req, timeout=30) as r: meta = json.loads(r.read().decode())
-    download(meta["downloads"]["client"]["url"], JAR)
+
+    if (
+        JAR.exists()
+        and JAR.stat().st_size
+        > 5_000_000
+    ):
+
+        return
+
+    req = Request(
+        MANIFEST,
+        headers={
+            "User-Agent":
+                "MinecraftFullGuideBot/2.0"
+        },
+    )
+
+    with urlopen(
+        req,
+        timeout=40,
+    ) as response:
+
+        manifest = json.loads(
+            response.read()
+            .decode("utf-8")
+        )
+
+    version_url = next(
+
+        version["url"]
+
+        for version in manifest[
+            "versions"
+        ]
+
+        if version["id"] == VERSION
+
+    )
+
+    req = Request(
+        version_url,
+        headers={
+            "User-Agent":
+                "MinecraftFullGuideBot/2.0"
+        },
+    )
+
+    with urlopen(
+        req,
+        timeout=40,
+    ) as response:
+
+        meta = json.loads(
+            response.read()
+            .decode("utf-8")
+        )
+
+    download(
+        meta["downloads"][
+            "client"
+        ]["url"],
+        JAR,
+    )
 
 
-def resource(path):
+# ============================================================
+# RECURSO
+# ============================================================
+
+def resource(
+    path,
+):
+
     ensure_client()
+
     try:
-        with zipfile.ZipFile(JAR) as z: data = z.read(path)
-        return Image.open(io.BytesIO(data)).convert("RGBA")
+
+        with zipfile.ZipFile(
+            JAR
+        ) as archive:
+
+            data = archive.read(
+                path
+            )
+
+        return Image.open(
+            io.BytesIO(data)
+        ).convert(
+            "RGBA"
+        )
+
     except Exception:
+
         return None
 
 
-def texture(ident):
-    ident = ident.replace("minecraft:", "")
-    return resource(f"assets/minecraft/textures/item/{ident}.png") or resource(f"assets/minecraft/textures/block/{ident}.png")
+# ============================================================
+# TEXTURA DEL ITEM
+# ============================================================
+
+def texture(
+    ident,
+):
+
+    ident = str(
+        ident
+    ).replace(
+        "minecraft:",
+        "",
+    )
+
+    # Primero textura del objeto.
+    image = resource(
+        "assets/minecraft/"
+        f"textures/item/"
+        f"{ident}.png"
+    )
+
+    if image is not None:
+        return image
+
+    # Después textura del bloque.
+    return resource(
+        "assets/minecraft/"
+        f"textures/block/"
+        f"{ident}.png"
+    )
 
 
-def block_textures(ident):
-    ident = ident.replace("minecraft:", "")
-    side = resource(f"assets/minecraft/textures/block/{ident}.png")
-    top = side
-    special = {
-        "grass_block": ("grass_block_side.png", "grass_block_top.png"),
-        "crafting_table": ("crafting_table_side.png", "crafting_table_top.png"),
-        "furnace": ("furnace_side.png", "furnace_top.png"),
-        "blast_furnace": ("blast_furnace_side.png", "blast_furnace_top.png"),
-        "smoker": ("smoker_side.png", "smoker_top.png"),
-    }
-    if ident in special:
-        s, t = special[ident]
-        side = resource(f"assets/minecraft/textures/block/{s}") or side
-        top = resource(f"assets/minecraft/textures/block/{t}") or top
-    return side, top
+# ============================================================
+# FUENTE
+# ============================================================
+
+def font(
+    size,
+    bold=True,
+):
+
+    paths = [
+
+        (
+            "/usr/share/fonts/"
+            "truetype/dejavu/"
+            "DejaVuSans-Bold.ttf"
+            if bold
+            else
+            "/usr/share/fonts/"
+            "truetype/dejavu/"
+            "DejaVuSans.ttf"
+        ),
+
+        (
+            "/usr/share/fonts/"
+            "truetype/liberation2/"
+            "LiberationSans-Bold.ttf"
+            if bold
+            else
+            "/usr/share/fonts/"
+            "truetype/liberation2/"
+            "LiberationSans-Regular.ttf"
+        ),
+
+    ]
+
+    for path in paths:
+
+        try:
+
+            return ImageFont.truetype(
+                path,
+                size,
+            )
+
+        except Exception:
+            pass
+
+    return ImageFont.load_default()
 
 
-def looks_block(ident):
-    prefixes = ("stone","deepslate","cobblestone","dirt","grass","sand","gravel","netherrack","end_stone","blackstone","basalt","obsidian","glass","ice","snow","brick","planks","log","wood","leaves","wool","concrete","terracotta","ore","block","crafting_table","furnace","blast_furnace","smoker")
-    return ident.replace("minecraft:", "").startswith(prefixes)
+# ============================================================
+# AJUSTAR TEXTURA
+# ============================================================
+
+def fit(
+    image,
+    size,
+):
+
+    if image is None:
+        return None
+
+    width, height = (
+        image.size
+    )
+
+    scale = min(
+
+        size / max(
+            1,
+            width,
+        ),
+
+        size / max(
+            1,
+            height,
+        ),
+
+    )
+
+    return image.resize(
+
+        (
+
+            max(
+                1,
+                int(
+                    width * scale
+                ),
+            ),
+
+            max(
+                1,
+                int(
+                    height * scale
+                ),
+            ),
+
+        ),
+
+        Image.Resampling.NEAREST,
+
+    )
 
 
-def fit(img, size):
-    w,h=img.size; scale=min(size/w,size/h)
-    return img.resize((max(1,int(w*scale)),max(1,int(h*scale))), Image.Resampling.NEAREST)
+# ============================================================
+# RECTÁNGULO
+# ============================================================
+
+def rounded_rectangle(
+    draw,
+    box,
+    radius,
+    fill,
+    outline=None,
+    width=1,
+):
+
+    draw.rounded_rectangle(
+
+        box,
+
+        radius=radius,
+
+        fill=fill,
+
+        outline=outline,
+
+        width=width,
+
+    )
 
 
-def draw_cube(canvas, ident, cx, cy, size):
-    side, top = block_textures(ident)
-    if side is None:
-        img=texture(ident)
-        if img: canvas.alpha_composite(fit(img,size),(cx-fit(img,size).width//2,cy-fit(img,size).height//2))
-        return
-    side=side.resize((size,size),Image.Resampling.NEAREST)
-    top=(top or side).resize((size,size//2),Image.Resampling.NEAREST)
-    # Cubo simple con volumen, usando las texturas reales.
-    left=side.resize((size//2,size),Image.Resampling.NEAREST)
-    right=side.resize((size//2,size),Image.Resampling.NEAREST)
-    mask=Image.new("L",(size//2,size),0); d=ImageDraw.Draw(mask)
-    d.polygon([(size//4,0),(size//2-1,size//8),(size//2-1,size),(size//4,7*size//8),(0,size),(0,size//8)],fill=255)
-    x=cx-size//2; y=cy-size//3
-    canvas.paste(left,(x,y+size//4),mask)
-    canvas.paste(right,(cx,y+size//4),mask)
-    tm=Image.new("L",(size,size//2),0); td=ImageDraw.Draw(tm)
-    td.polygon([(size//2,0),(size-1,size//4),(size//2,size//2-1),(0,size//4)],fill=255)
-    canvas.paste(top,(x,y-size//8),tm)
+# ============================================================
+# ITEM
+# ============================================================
+
+def draw_item(
+    canvas,
+    ident,
+    count,
+    x,
+    y,
+    size,
+):
+
+    image = texture(
+        ident
+    )
+
+    if image is not None:
+
+        image = fit(
+            image,
+            int(
+                size * 0.72
+            ),
+        )
+
+        canvas.alpha_composite(
+
+            image,
+
+            (
+
+                x
+                + (
+                    size
+                    - image.width
+                ) // 2,
+
+                y
+                + (
+                    size
+                    - image.height
+                ) // 2,
+
+            ),
+
+        )
+
+    # Cantidad.
+    if count and int(
+        count
+    ) > 1:
+
+        draw = ImageDraw.Draw(
+            canvas
+        )
+
+        f = font(
+            24
+        )
+
+        text = str(
+            int(count)
+        )
+
+        box = draw.textbbox(
+            (0, 0),
+            text,
+            font=f,
+        )
+
+        width = (
+            box[2]
+            - box[0]
+        )
+
+        height = (
+            box[3]
+            - box[1]
+        )
+
+        tx = (
+            x
+            + size
+            - width
+            - 8
+        )
+
+        ty = (
+            y
+            + size
+            - height
+            - 7
+        )
+
+        draw.text(
+
+            (
+                tx + 2,
+                ty + 2,
+            ),
+
+            text,
+
+            font=f,
+
+            fill=(
+                0,
+                0,
+                0,
+                255,
+            ),
+
+        )
+
+        draw.text(
+
+            (
+                tx,
+                ty,
+            ),
+
+            text,
+
+            font=f,
+
+            fill=(
+                255,
+                255,
+                255,
+                255,
+            ),
+
+        )
 
 
-def draw_count(img,count,x,y):
-    if int(count)<=1:return
-    try: font=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",15)
-    except Exception: font=ImageFont.load_default()
-    s=str(count); box=ImageDraw.Draw(img).textbbox((0,0),s,font=font); w=box[2]-box[0]; h=box[3]-box[1]
-    dr=ImageDraw.Draw(img)
-    dr.text((x-w-1,y-h),s,font=font,fill="black")
-    dr.text((x-w-2,y-h-1),s,font=font,fill="white")
+# ============================================================
+# SLOT
+# ============================================================
+
+def draw_slot(
+    canvas,
+    ident,
+    count,
+    x,
+    y,
+    size,
+):
+
+    draw = ImageDraw.Draw(
+        canvas
+    )
+
+    rounded_rectangle(
+
+        draw,
+
+        (
+            x,
+            y,
+            x + size,
+            y + size,
+        ),
+
+        10,
+
+        fill=(
+            220,
+            220,
+            220,
+            255,
+        ),
+
+        outline=(
+            95,
+            95,
+            95,
+            255,
+        ),
+
+        width=3,
+
+    )
+
+    if ident:
+
+        draw_item(
+
+            canvas,
+
+            ident,
+
+            count,
+
+            x,
+            y,
+            size,
+
+        )
 
 
-def draw_item(img,ident,count,x,y,size):
-    ident=ident.replace("minecraft:","")
-    if looks_block(ident): draw_cube(img,ident,x+size//2,y+size//2,size)
-    else:
-        tex=texture(ident)
-        if tex:
-            tex=fit(tex,int(size*.82)); img.alpha_composite(tex,(x+(size-tex.width)//2,y+(size-tex.height)//2))
-    draw_count(img,count,x+size-2,y+size-2)
+# ============================================================
+# FLECHA
+# ============================================================
+
+def draw_arrow(
+    canvas,
+    x,
+    y,
+):
+
+    draw = ImageDraw.Draw(
+        canvas
+    )
+
+    draw.text(
+
+        (
+            x,
+            y,
+        ),
+
+        "➜",
+
+        font=font(
+            58
+        ),
+
+        fill=(
+            55,
+            55,
+            55,
+            255,
+        ),
+
+    )
 
 
-def generar_imagen_crafteo(item):
-    receta=item.get("receta")
-    if not receta:return None
+# ============================================================
+# MESA DE CRAFTEO 3x3
+# ============================================================
+
+def draw_crafting(
+    canvas,
+    recipe,
+    result_id,
+    result_count,
+):
+
+    draw = ImageDraw.Draw(
+        canvas
+    )
+
+    draw.text(
+
+        (
+            55,
+            35,
+        ),
+
+        "FABRICACIÓN",
+
+        font=font(
+            48
+        ),
+
+        fill=(
+            35,
+            35,
+            35,
+            255,
+        ),
+
+    )
+
+    draw.text(
+
+        (
+            57,
+            92,
+        ),
+
+        "Mesa de crafteo · cuadrícula 3×3",
+
+        font=font(
+            25
+        ),
+
+        fill=(
+            90,
+            90,
+            90,
+            255,
+        ),
+
+    )
+
+    grid = (
+        recipe.get(
+            "patron"
+        )
+        or
+        [
+            [None, None, None],
+            [None, None, None],
+            [None, None, None],
+        ]
+    )
+
+    slot = 125
+
+    start_x = 115
+    start_y = 165
+
+    gap = 16
+
+    # SIEMPRE 3x3.
+    for y in range(3):
+
+        for x in range(3):
+
+            ident = None
+
+            if (
+                y < len(grid)
+                and x < len(grid[y])
+            ):
+
+                ident = grid[y][x]
+
+            draw_slot(
+
+                canvas,
+
+                ident,
+
+                1,
+
+                start_x
+                + x * (
+                    slot + gap
+                ),
+
+                start_y
+                + y * (
+                    slot + gap
+                ),
+
+                slot,
+
+            )
+
+    draw_arrow(
+        canvas,
+        600,
+        305,
+    )
+
+    result_x = 790
+    result_y = 295
+
+    draw_slot(
+
+        canvas,
+
+        result_id,
+
+        result_count,
+
+        result_x,
+        result_y,
+
+        170,
+
+    )
+
+    draw.text(
+
+        (
+            775,
+            485,
+        ),
+
+        "Resultado",
+
+        font=font(
+            25
+        ),
+
+        fill=(
+            70,
+            70,
+            70,
+            255,
+        ),
+
+    )
+
+
+# ============================================================
+# HORNO / ALTO HORNO / AHUMADOR
+# ============================================================
+
+def draw_smelting(
+    canvas,
+    recipe,
+    result_id,
+    result_count,
+):
+
+    draw = ImageDraw.Draw(
+        canvas
+    )
+
+    station = (
+
+        recipe.get(
+            "estacion"
+        )
+
+        or
+
+        recipe.get(
+            "mesa"
+        )
+
+        or
+
+        "Horno"
+
+    )
+
+    draw.text(
+
+        (
+            55,
+            35,
+        ),
+
+        station.upper(),
+
+        font=font(
+            48
+        ),
+
+        fill=(
+            35,
+            35,
+            35,
+            255,
+        ),
+
+    )
+
+    draw.text(
+
+        (
+            57,
+            92,
+        ),
+
+        "Entrada → proceso → resultado",
+
+        font=font(
+            25
+        ),
+
+        fill=(
+            90,
+            90,
+            90,
+            255,
+        ),
+
+    )
+
+    entrada = recipe.get(
+        "entrada"
+    )
+
+    draw_slot(
+
+        canvas,
+
+        entrada,
+
+        1,
+
+        150,
+        280,
+
+        170,
+
+    )
+
+    # Fuego.
+    draw.text(
+
+        (
+            440,
+            265,
+        ),
+
+        "🔥",
+
+        font=font(
+            70
+        ),
+
+        fill=(
+            255,
+            100,
+            20,
+            255,
+        ),
+
+    )
+
+    draw_arrow(
+
+        canvas,
+
+        555,
+        285,
+
+    )
+
+    draw_slot(
+
+        canvas,
+
+        result_id,
+
+        result_count,
+
+        760,
+        280,
+
+        170,
+
+    )
+
+    draw.text(
+
+        (
+            145,
+            480,
+        ),
+
+        "Entrada",
+
+        font=font(
+            25
+        ),
+
+        fill=(
+            70,
+            70,
+            70,
+            255,
+        ),
+
+    )
+
+    draw.text(
+
+        (
+            755,
+            475,
+        ),
+
+        "Resultado",
+
+        font=font(
+            25
+        ),
+
+        fill=(
+            70,
+            70,
+            70,
+            255,
+        ),
+
+    )
+
+
+# ============================================================
+# GENERAR IMAGEN
+# ============================================================
+
+def generar_imagen_crafteo(
+    item,
+):
+
+    recipe = item.get(
+        "receta"
+    )
+
+    if not recipe:
+        return None
+
     try:
-        gui=resource(GUI)
-        if gui is None:
-            logger.error("No se pudo cargar la GUI vanilla.")
-            return None
-        gui=gui.resize((704,664),Image.Resampling.NEAREST)
-        dr=ImageDraw.Draw(gui)
-        try: font=ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",48)
-        except Exception: font=ImageFont.load_default()
-        dr.text((32,24),"Fabricación",font=font,fill=(64,64,64,255))
 
-        # SIEMPRE 3x3, aunque la receta original use 2x2.
-        pattern=receta.get("patron") or [[None]*3 for _ in range(3)]
-        grid=[[None]*3 for _ in range(3)]
-        for y in range(min(3,len(pattern))):
-            if isinstance(pattern[y],list):
-                for x in range(min(3,len(pattern[y]))): grid[y][x]=pattern[y][x]
-        ox,oy,step,slot=30*4,17*4,18*4,16*4
-        for y in range(3):
-            for x in range(3):
-                if grid[y][x]: draw_item(gui,grid[y][x],1,ox+x*step,oy+y*step,slot)
-        rid=str(item.get("id") or item.get("identificador","")).replace("minecraft:","")
-        draw_item(gui,rid,int(receta.get("resultado_cantidad") or 1),124*4,35*4,slot)
-        out=io.BytesIO(); gui.save(out,"PNG",optimize=True); out.seek(0); out.name="crafteo.png"; return out
+        canvas = Image.new(
+
+            "RGBA",
+
+            (
+                ANCHO,
+                ALTO,
+            ),
+
+            (
+                242,
+                242,
+                242,
+                255,
+            ),
+
+        )
+
+        draw = ImageDraw.Draw(
+            canvas
+        )
+
+        # Marco.
+        rounded_rectangle(
+
+            draw,
+
+            (
+                25,
+                25,
+                ANCHO - 25,
+                ALTO - 25,
+            ),
+
+            24,
+
+            fill=(
+                250,
+                250,
+                250,
+                255,
+            ),
+
+            outline=(
+                75,
+                75,
+                75,
+                255,
+            ),
+
+            width=4,
+
+        )
+
+        result_id = str(
+            item.get(
+                "id"
+            )
+            or ""
+        ).replace(
+            "minecraft:",
+            "",
+        )
+
+        result_count = int(
+            recipe.get(
+                "resultado_cantidad"
+            )
+            or 1
+        )
+
+        if (
+            recipe.get(
+                "tipo"
+            )
+            == "smelting"
+        ):
+
+            draw_smelting(
+
+                canvas,
+
+                recipe,
+
+                result_id,
+
+                result_count,
+
+            )
+
+        else:
+
+            draw_crafting(
+
+                canvas,
+
+                recipe,
+
+                result_id,
+
+                result_count,
+
+            )
+
+        # Pie.
+        draw.text(
+
+            (
+                55,
+                700,
+            ),
+
+            "Minecraft Java 26.1.2 · MinecraftFullGuideBot",
+
+            font=font(
+                20,
+                False,
+            ),
+
+            fill=(
+                115,
+                115,
+                115,
+                255,
+            ),
+
+        )
+
+        output = io.BytesIO()
+
+        canvas.save(
+            output,
+            "PNG",
+            optimize=True,
+        )
+
+        output.seek(0)
+
+        output.name = (
+            "crafteo.png"
+        )
+
+        return output
+
     except Exception:
-        logger.exception("Error generando imagen de crafteo")
+
+        logger.exception(
+            "Error generando imagen de receta"
+        )
+
         return None
