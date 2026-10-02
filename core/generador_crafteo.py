@@ -1,6 +1,3 @@
-# core/generador_crafteo.py
-
-import json
 import zipfile
 from io import BytesIO
 from pathlib import Path
@@ -25,6 +22,14 @@ def _cargar_asset(ruta):
 
 
 def _cargar_textura_item(identifier):
+    if not identifier:
+        return None
+
+    identifier = str(identifier)
+
+    if identifier.startswith("#"):
+        identifier = identifier[1:]
+
     rutas = [
         f"assets/minecraft/textures/item/{identifier}.png",
         f"assets/minecraft/textures/block/{identifier}.png",
@@ -38,6 +43,7 @@ def _cargar_textura_item(identifier):
                 return Image.open(
                     BytesIO(data)
                 ).convert("RGBA")
+
             except Exception:
                 pass
 
@@ -58,6 +64,7 @@ def _cargar_gui(nombre):
                 return Image.open(
                     BytesIO(data)
                 ).convert("RGBA")
+
             except Exception:
                 pass
 
@@ -65,14 +72,6 @@ def _cargar_gui(nombre):
 
 
 def _textura(identifier):
-    textura = _cargar_textura_item(identifier)
-
-    if textura:
-        return textura
-
-    if identifier.startswith("#"):
-        identifier = identifier[1:]
-
     return _cargar_textura_item(identifier)
 
 
@@ -176,37 +175,42 @@ def _dibujar_crafting(
 
     inicio_x = 150
     inicio_y = 160
+
     slot = 110
     separacion = 8
 
     matriz = receta.get("matriz")
 
+    # ========================================================
+    # MATRIZ 3x3 SIEMPRE
+    # ========================================================
+
+    for fila in range(3):
+        for columna in range(3):
+            x = (
+                inicio_x
+                + columna * (slot + separacion)
+            )
+
+            y = (
+                inicio_y
+                + fila * (slot + separacion)
+            )
+
+            _dibujar_slot(
+                imagen,
+                x,
+                y,
+                slot,
+            )
+
     if matriz:
         alto_matriz = len(matriz)
+
         ancho_matriz = max(
             len(fila)
             for fila in matriz
         )
-
-        # SIEMPRE 3x3.
-        for fila in range(3):
-            for columna in range(3):
-                x = (
-                    inicio_x
-                    + columna * (slot + separacion)
-                )
-
-                y = (
-                    inicio_y
-                    + fila * (slot + separacion)
-                )
-
-                _dibujar_slot(
-                    imagen,
-                    x,
-                    y,
-                    slot,
-                )
 
         offset_x = (
             (3 - ancho_matriz)
@@ -257,25 +261,6 @@ def _dibujar_crafting(
             [],
         )
 
-        for fila in range(3):
-            for columna in range(3):
-                x = (
-                    inicio_x
-                    + columna * (slot + separacion)
-                )
-
-                y = (
-                    inicio_y
-                    + fila * (slot + separacion)
-                )
-
-                _dibujar_slot(
-                    imagen,
-                    x,
-                    y,
-                    slot,
-                )
-
         for indice, ingrediente in enumerate(
             ingredientes[:9]
         ):
@@ -300,6 +285,10 @@ def _dibujar_crafting(
                 slot,
             )
 
+    # ========================================================
+    # FLECHA
+    # ========================================================
+
     flecha_x = 590
     flecha_y = 285
 
@@ -315,6 +304,10 @@ def _dibujar_crafting(
         ],
         fill=(80, 80, 80, 255),
     )
+
+    # ========================================================
+    # RESULTADO
+    # ========================================================
 
     salida_x = 830
     salida_y = 220
@@ -473,6 +466,7 @@ def generar_imagen_crafteo(
     )
 
     buffer.seek(0)
+
     buffer.name = "recipe.png"
 
     return buffer
