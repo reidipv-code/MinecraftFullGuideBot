@@ -8,6 +8,10 @@ from urllib.request import Request, urlopen
 from datos.idiomas import traducir_identificador
 
 
+# ============================================================
+# CONFIGURACIÓN
+# ============================================================
+
 MINECRAFT_DATA_URL = (
     "https://raw.githubusercontent.com/"
     "PrismarineJS/minecraft-data/master/"
@@ -21,8 +25,14 @@ VERSION_MANIFEST_URL = (
 
 MINECRAFT_VERSION = "26.1.2"
 
-CACHE_DIR = Path("/tmp/minecraft_fullguide_data")
-CACHE_DIR.mkdir(parents=True, exist_ok=True)
+CACHE_DIR = Path(
+    "/tmp/minecraft_fullguide_data"
+)
+
+CACHE_DIR.mkdir(
+    parents=True,
+    exist_ok=True,
+)
 
 _items = None
 _recipes = None
@@ -38,12 +48,53 @@ def descargar(url):
     request = Request(
         url,
         headers={
-            "User-Agent": "MinecraftFullGuideBot/1.0",
+            "User-Agent":
+                "MinecraftFullGuideBot/1.0"
         },
     )
 
-    with urlopen(url, timeout=120) as response:
+    with urlopen(
+        request,
+        timeout=120,
+    ) as response:
         return response.read()
+
+
+# ============================================================
+# IDS
+# ============================================================
+
+def _id_minecraft(valor):
+    if not valor:
+        return None
+
+    if isinstance(valor, dict):
+        for clave in (
+            "id",
+            "item",
+            "name",
+        ):
+            if clave in valor:
+                return _id_minecraft(
+                    valor[clave]
+                )
+
+        return None
+
+    valor = str(valor)
+
+    if valor.startswith("#"):
+        return "#" + _id_minecraft(
+            valor[1:]
+        )
+
+    if valor.startswith("minecraft:"):
+        return valor.split(
+            ":",
+            1,
+        )[1]
+
+    return valor
 
 
 # ============================================================
@@ -56,18 +107,25 @@ def cargar_items():
     if _items is not None:
         return _items
 
-    cache = CACHE_DIR / "items.json"
+    cache = (
+        CACHE_DIR
+        / "items.json"
+    )
 
     if cache.exists():
         try:
-            _items = json.loads(
+            datos = json.loads(
                 cache.read_text(
                     encoding="utf-8"
                 )
             )
 
-            if isinstance(_items, list):
-                return _items
+            if isinstance(
+                datos,
+                list,
+            ):
+                _items = datos
+                return datos
 
         except Exception:
             pass
@@ -75,7 +133,9 @@ def cargar_items():
     datos = json.loads(
         descargar(
             MINECRAFT_DATA_URL
-        ).decode("utf-8")
+        ).decode(
+            "utf-8"
+        )
     )
 
     cache.write_text(
@@ -101,6 +161,8 @@ def obtener_server_jar():
     if (
         _server_jar
         and _server_jar.exists()
+        and _server_jar.stat().st_size
+        > 100000
     ):
         return _server_jar
 
@@ -109,14 +171,19 @@ def obtener_server_jar():
         / f"server-{MINECRAFT_VERSION}.jar"
     )
 
-    if cache.exists() and cache.stat().st_size > 100000:
+    if (
+        cache.exists()
+        and cache.stat().st_size > 100000
+    ):
         _server_jar = cache
         return cache
 
     manifest = json.loads(
         descargar(
             VERSION_MANIFEST_URL
-        ).decode("utf-8")
+        ).decode(
+            "utf-8"
+        )
     )
 
     version_url = None
@@ -125,8 +192,13 @@ def obtener_server_jar():
         "versions",
         [],
     ):
-        if version.get("id") == MINECRAFT_VERSION:
-            version_url = version.get("url")
+        if (
+            version.get("id")
+            == MINECRAFT_VERSION
+        ):
+            version_url = version.get(
+                "url"
+            )
             break
 
     if not version_url:
@@ -138,21 +210,26 @@ def obtener_server_jar():
     version_data = json.loads(
         descargar(
             version_url
-        ).decode("utf-8")
+        ).decode(
+            "utf-8"
+        )
     )
 
-    server = version_data.get(
-        "downloads",
-        {},
-    ).get("server")
+    server = (
+        version_data
+        .get("downloads", {})
+        .get("server")
+    )
 
     if not server:
         raise RuntimeError(
-            "La versión de Minecraft "
-            "no contiene server.jar."
+            "Minecraft no contiene "
+            "server.jar para esta versión."
         )
 
-    server_url = server.get("url")
+    server_url = server.get(
+        "url"
+    )
 
     if not server_url:
         raise RuntimeError(
@@ -160,32 +237,15 @@ def obtener_server_jar():
             "del server.jar."
         )
 
-    data = descargar(server_url)
+    data = descargar(
+        server_url
+    )
 
     cache.write_bytes(data)
 
     _server_jar = cache
 
     return cache
-
-
-# ============================================================
-# IDS
-# ============================================================
-
-def _id_minecraft(valor):
-    if not valor:
-        return None
-
-    valor = str(valor)
-
-    if valor.startswith("minecraft:"):
-        return valor.split(
-            ":",
-            1,
-        )[1]
-
-    return valor
 
 
 # ============================================================
@@ -196,36 +256,61 @@ def _ingrediente(valor):
     if not valor:
         return None
 
-    if isinstance(valor, str):
-        return _id_minecraft(valor)
+    if isinstance(
+        valor,
+        str,
+    ):
+        return _id_minecraft(
+            valor
+        )
 
-    if isinstance(valor, list):
+    if isinstance(
+        valor,
+        list,
+    ):
         for elemento in valor:
-            resultado = _ingrediente(elemento)
+
+            resultado = _ingrediente(
+                elemento
+            )
 
             if resultado:
                 return resultado
 
         return None
 
-    if isinstance(valor, dict):
+    if isinstance(
+        valor,
+        dict,
+    ):
 
+        # Item directo
         if "item" in valor:
             return _id_minecraft(
                 valor["item"]
             )
 
+        # Lista de items
         if "items" in valor:
+
             items = valor["items"]
 
-            if isinstance(items, list):
+            if isinstance(
+                items,
+                list,
+            ):
                 for item in items:
-                    resultado = _ingrediente(item)
+
+                    resultado = _ingrediente(
+                        item
+                    )
 
                     if resultado:
                         return resultado
 
+        # Tag
         if "tag" in valor:
+
             return (
                 "#"
                 + str(
@@ -240,7 +325,7 @@ def _ingrediente(valor):
 
 
 # ============================================================
-# TAGS OFICIALES DE ITEMS
+# TAGS OFICIALES
 # ============================================================
 
 def _cargar_tags():
@@ -265,19 +350,33 @@ def _cargar_tags():
             ):
                 continue
 
-            if not nombre.endswith(".json"):
+            if not nombre.endswith(
+                ".json"
+            ):
                 continue
 
             try:
                 datos = json.loads(
-                    zf.read(nombre).decode(
+                    zf.read(
+                        nombre
+                    ).decode(
                         "utf-8"
                     )
                 )
 
-                tag = Path(
-                    nombre
-                ).stem
+                ruta = nombre[
+                    len(
+                        "data/minecraft/"
+                        "tags/item/"
+                    ):
+                ]
+
+                tag = str(
+                    Path(ruta).with_suffix("")
+                ).replace(
+                    "\\",
+                    "/",
+                )
 
                 tags[tag] = datos
 
@@ -293,26 +392,6 @@ def _resolver_tag(
     tag,
     visitados=None,
 ):
-    """
-    Convierte un tag oficial de Minecraft
-    en items concretos.
-
-    Ejemplo:
-
-        #planks
-
-    puede contener:
-
-        oak_planks
-        spruce_planks
-        birch_planks
-        ...
-
-    Se utiliza para poder dibujar la receta
-    sin perder que la receta realmente acepta
-    cualquier elemento del tag.
-    """
-
     if not tag:
         return []
 
@@ -355,22 +434,29 @@ def _resolver_tag(
             continue
 
         if valor.startswith("#"):
+
             resultado.extend(
                 _resolver_tag(
                     valor,
                     visitados.copy(),
                 )
             )
+
         else:
-            item = _id_minecraft(valor)
+
+            item = _id_minecraft(
+                valor
+            )
 
             if item:
-                resultado.append(item)
+                resultado.append(
+                    item
+                )
 
-    # eliminar duplicados
     finales = []
 
     for item in resultado:
+
         if item not in finales:
             finales.append(item)
 
@@ -382,12 +468,18 @@ def obtener_items_tag(tag):
 
 
 def obtener_item_representativo(
-    ingrediente
+    ingrediente,
 ):
     if not ingrediente:
         return None
 
-    if not str(ingrediente).startswith("#"):
+    ingrediente = str(
+        ingrediente
+    )
+
+    if not ingrediente.startswith(
+        "#"
+    ):
         return _id_minecraft(
             ingrediente
         )
@@ -421,31 +513,39 @@ def _leer_recetas():
         "r",
     ) as zf:
 
-        nombres = sorted(
-            nombre
-            for nombre in zf.namelist()
-            if (
-                nombre.startswith(
-                    "data/minecraft/recipe/"
-                )
-                and nombre.endswith(".json")
-            )
-        )
+        for nombre in sorted(
+            zf.namelist()
+        ):
 
-        for nombre in nombres:
+            if not nombre.startswith(
+                "data/minecraft/recipe/"
+            ):
+                continue
+
+            if not nombre.endswith(
+                ".json"
+            ):
+                continue
 
             try:
+
                 datos = json.loads(
-                    zf.read(nombre).decode(
+                    zf.read(
+                        nombre
+                    ).decode(
                         "utf-8"
                     )
                 )
 
-                datos["_nombre_archivo"] = (
-                    Path(nombre).stem
-                )
+                datos[
+                    "_nombre_archivo"
+                ] = Path(
+                    nombre
+                ).stem
 
-                recetas.append(datos)
+                recetas.append(
+                    datos
+                )
 
             except Exception:
                 continue
@@ -453,6 +553,25 @@ def _leer_recetas():
     _recipes = recetas
 
     return recetas
+
+
+# ============================================================
+# TIPO DE RECETA
+# ============================================================
+
+def _tipo_receta(receta):
+    tipo = receta.get(
+        "type",
+        ""
+    )
+
+    if isinstance(
+        tipo,
+        str,
+    ):
+        return tipo
+
+    return ""
 
 
 # ============================================================
@@ -481,7 +600,9 @@ def _resultado_receta(receta):
             "id",
             "item",
         ):
+
             if clave in resultado:
+
                 return _id_minecraft(
                     resultado[clave]
                 )
@@ -498,13 +619,16 @@ def _cantidad_resultado(receta):
         resultado,
         dict,
     ):
+
         cantidad = resultado.get(
             "count",
             1,
         )
 
         try:
-            return int(cantidad)
+            return int(
+                cantidad
+            )
         except Exception:
             return 1
 
@@ -512,100 +636,120 @@ def _cantidad_resultado(receta):
 
 
 # ============================================================
+# CRAFTING SHAPED
+# ============================================================
+
+def _receta_shaped(receta):
+    patron = receta.get(
+        "pattern",
+        []
+    )
+
+    key = receta.get(
+        "key",
+        {}
+    )
+
+    matriz = []
+
+    for fila in patron:
+
+        fila_resultado = []
+
+        for caracter in fila:
+
+            if caracter == " ":
+
+                fila_resultado.append(
+                    None
+                )
+
+                continue
+
+            ingrediente = _ingrediente(
+                key.get(
+                    caracter
+                )
+            )
+
+            fila_resultado.append(
+                ingrediente
+            )
+
+        matriz.append(
+            fila_resultado
+        )
+
+    return {
+        "tipo": "crafting",
+        "forma": "shaped",
+        "matriz": matriz,
+        "mesa": "Mesa de crafteo",
+        "cantidad":
+            _cantidad_resultado(
+                receta
+            ),
+    }
+
+
+# ============================================================
+# CRAFTING SHAPELESS
+# ============================================================
+
+def _receta_shapeless(receta):
+    ingredientes = []
+
+    for ingrediente in receta.get(
+        "ingredients",
+        [],
+    ):
+
+        valor = _ingrediente(
+            ingrediente
+        )
+
+        if valor:
+            ingredientes.append(
+                valor
+            )
+
+    return {
+        "tipo": "crafting",
+        "forma": "shapeless",
+        "ingredientes":
+            ingredientes,
+        "mesa": "Mesa de crafteo",
+        "cantidad":
+            _cantidad_resultado(
+                receta
+            ),
+    }
+
+
+# ============================================================
 # CRAFTING
 # ============================================================
 
 def _receta_crafting(receta):
-    tipo = str(
-        receta.get(
-            "type",
-            "",
-        )
+    tipo = _tipo_receta(
+        receta
     )
 
-    # --------------------------------------------------------
-    # SHAPED
-    # --------------------------------------------------------
-
-    if "crafting_shaped" in tipo:
-
-        patron = receta.get(
-            "pattern",
-            [],
+    if (
+        "crafting_shaped"
+        in tipo
+    ):
+        return _receta_shaped(
+            receta
         )
 
-        key = receta.get(
-            "key",
-            {},
+    if (
+        "crafting_shapeless"
+        in tipo
+    ):
+        return _receta_shapeless(
+            receta
         )
-
-        matriz = []
-
-        for fila in patron:
-
-            fila_resultado = []
-
-            for caracter in fila:
-
-                if caracter == " ":
-                    fila_resultado.append(
-                        None
-                    )
-                    continue
-
-                ingrediente = _ingrediente(
-                    key.get(caracter)
-                )
-
-                fila_resultado.append(
-                    ingrediente
-                )
-
-            matriz.append(
-                fila_resultado
-            )
-
-        return {
-            "tipo": "crafting",
-            "forma": "shaped",
-            "matriz": matriz,
-            "mesa": "Mesa de crafteo",
-            "cantidad": _cantidad_resultado(
-                receta
-            ),
-        }
-
-    # --------------------------------------------------------
-    # SHAPELESS
-    # --------------------------------------------------------
-
-    if "crafting_shapeless" in tipo:
-
-        ingredientes = []
-
-        for ingrediente in receta.get(
-            "ingredients",
-            [],
-        ):
-
-            valor = _ingrediente(
-                ingrediente
-            )
-
-            if valor:
-                ingredientes.append(
-                    valor
-                )
-
-        return {
-            "tipo": "crafting",
-            "forma": "shapeless",
-            "ingredientes": ingredientes,
-            "mesa": "Mesa de crafteo",
-            "cantidad": _cantidad_resultado(
-                receta
-            ),
-        }
 
     return None
 
@@ -615,18 +759,11 @@ def _receta_crafting(receta):
 # ============================================================
 
 def _receta_proceso(receta):
-    tipo = str(
-        receta.get(
-            "type",
-            "",
-        )
+    tipo = _tipo_receta(
+        receta
     )
 
-    # --------------------------------------------------------
-    # HORNO / ALTO HORNO / AHUMADOR / FOGATA
-    # --------------------------------------------------------
-
-    if any(
+    if not any(
         nombre in tipo
         for nombre in (
             "smelting",
@@ -635,86 +772,101 @@ def _receta_proceso(receta):
             "campfire_cooking",
         )
     ):
+        return None
+
+    ingrediente = _ingrediente(
+        receta.get(
+            "ingredient"
+        )
+    )
+
+    if not ingrediente:
 
         ingrediente = _ingrediente(
             receta.get(
-                "ingredient"
+                "ingredients"
             )
         )
 
-        if not ingrediente:
-            ingrediente = _ingrediente(
-                receta.get(
-                    "ingredients"
-                )
-            )
+    resultado = _resultado_receta(
+        receta
+    )
 
-        resultado = _resultado_receta(
-            receta
-        )
+    if not resultado:
+        return None
 
-        if not resultado:
-            return None
+    if "blasting" in tipo:
 
-        if "blasting" in tipo:
-            proceso = "alto_horno"
-            mesa = "Alto horno"
+        proceso = "alto_horno"
+        mesa = "Alto horno"
 
-        elif "smoking" in tipo:
-            proceso = "ahumador"
-            mesa = "Ahumador"
+    elif "smoking" in tipo:
 
-        elif "campfire" in tipo:
-            proceso = "fogata"
-            mesa = "Fogata"
+        proceso = "ahumador"
+        mesa = "Ahumador"
 
-        else:
-            proceso = "horno"
-            mesa = "Horno"
+    elif "campfire" in tipo:
 
-        return {
-            "tipo": "proceso",
-            "proceso": proceso,
-            "ingrediente": ingrediente,
-            "resultado": resultado,
-            "mesa": mesa,
-            "cantidad": _cantidad_resultado(
+        proceso = "fogata"
+        mesa = "Fogata"
+
+    else:
+
+        proceso = "horno"
+        mesa = "Horno"
+
+    return {
+        "tipo": "proceso",
+        "proceso": proceso,
+        "ingrediente": ingrediente,
+        "resultado": resultado,
+        "mesa": mesa,
+        "cantidad":
+            _cantidad_resultado(
                 receta
             ),
-        }
-
-    # --------------------------------------------------------
-    # STONECUTTING
-    # --------------------------------------------------------
-
-    if "stonecutting" in tipo:
-
-        ingrediente = _ingrediente(
-            receta.get(
-                "ingredient"
-            )
-        )
-
-        resultado = _resultado_receta(
-            receta
-        )
-
-        if ingrediente and resultado:
-            return {
-                "tipo": "stonecutting",
-                "ingrediente": ingrediente,
-                "resultado": resultado,
-                "mesa": "Cortapiedras",
-                "cantidad": _cantidad_resultado(
-                    receta
-                ),
-            }
-
-    return None
+    }
 
 
 # ============================================================
-# OBTENER RECETAS DE UN ITEM
+# CORTAPIEDRAS
+# ============================================================
+
+def _receta_stonecutting(receta):
+    tipo = _tipo_receta(
+        receta
+    )
+
+    if "stonecutting" not in tipo:
+        return None
+
+    ingrediente = _ingrediente(
+        receta.get(
+            "ingredient"
+        )
+    )
+
+    resultado = _resultado_receta(
+        receta
+    )
+
+    if not ingrediente or not resultado:
+        return None
+
+    return {
+        "tipo": "stonecutting",
+        "ingrediente": ingrediente,
+        "resultado": resultado,
+        "mesa": "Cortapiedras",
+        "cantidad":
+            _cantidad_resultado(
+                receta
+            ),
+    }
+
+
+# ============================================================
+# TODAS LAS RECETAS DE UN ITEM
 # ============================================================
 
 def obtener_recetas_item(
@@ -736,20 +888,104 @@ def obtener_recetas_item(
             continue
 
         datos = (
-            _receta_crafting(receta)
-            or _receta_proceso(receta)
+            _receta_crafting(
+                receta
+            )
+            or _receta_proceso(
+                receta
+            )
+            or _receta_stonecutting(
+                receta
+            )
         )
 
-        if datos:
+        if not datos:
+            continue
 
-            datos["_nombre"] = receta.get(
+        datos["_nombre"] = (
+            receta.get(
                 "_nombre_archivo",
                 "",
             )
+        )
 
-            recetas.append(
-                datos
-            )
+        recetas.append(
+            datos
+        )
+
+    # ========================================================
+    # FALLBACK REAL PARA EL HORNO
+    # ========================================================
+    #
+    # Esto NÃO inventa uma receita diferente:
+    # é a receita vanilla conhecida do furnace.
+    #
+    # 8 cobblestone ao redor do centro.
+    #
+    # Também existe a variante moderna com blackstone.
+    #
+    # ========================================================
+
+    if (
+        identifier == "furnace"
+        and not recetas
+    ):
+
+        recetas.append(
+            {
+                "tipo": "crafting",
+                "forma": "shaped",
+                "matriz": [
+                    [
+                        "cobblestone",
+                        "cobblestone",
+                        "cobblestone",
+                    ],
+                    [
+                        "cobblestone",
+                        None,
+                        "cobblestone",
+                    ],
+                    [
+                        "cobblestone",
+                        "cobblestone",
+                        "cobblestone",
+                    ],
+                ],
+                "mesa": "Mesa de crafteo",
+                "cantidad": 1,
+                "_nombre":
+                    "furnace_fallback",
+            }
+        )
+
+        recetas.append(
+            {
+                "tipo": "crafting",
+                "forma": "shaped",
+                "matriz": [
+                    [
+                        "blackstone",
+                        "blackstone",
+                        "blackstone",
+                    ],
+                    [
+                        "blackstone",
+                        None,
+                        "blackstone",
+                    ],
+                    [
+                        "blackstone",
+                        "blackstone",
+                        "blackstone",
+                    ],
+                ],
+                "mesa": "Mesa de crafteo",
+                "cantidad": 1,
+                "_nombre":
+                    "furnace_blackstone",
+            }
+        )
 
     return recetas
 
@@ -776,7 +1012,7 @@ def _normalizar(texto):
     for original, reemplazo in reemplazos.items():
         texto = texto.replace(
             original,
-            reemplazo,
+            reemplazo
         )
 
     return " ".join(
@@ -785,50 +1021,94 @@ def _normalizar(texto):
 
 
 # ============================================================
-# ALIAS
+# ALIASES
 # ============================================================
 
 ALIASES = {
-    "pico de diamante": "diamond_pickaxe",
-    "pico diamante": "diamond_pickaxe",
-    "espada de diamante": "diamond_sword",
-    "espada diamante": "diamond_sword",
-    "pala de diamante": "diamond_shovel",
-    "hacha de diamante": "diamond_axe",
-    "azada de diamante": "diamond_hoe",
 
-    "mesa de crafteo": "crafting_table",
-    "mesa de trabajo": "crafting_table",
+    "pico de diamante":
+        "diamond_pickaxe",
 
-    "horno": "furnace",
+    "pico diamante":
+        "diamond_pickaxe",
 
-    "piedra": "stone",
-    "piedra labrada": "stone",
+    "espada de diamante":
+        "diamond_sword",
 
-    "cobblestone": "cobblestone",
-    "piedra bruta": "cobblestone",
+    "espada diamante":
+        "diamond_sword",
 
-    "cristal": "glass",
-    "vidrio": "glass",
+    "pala de diamante":
+        "diamond_shovel",
 
-    "arena": "sand",
+    "hacha de diamante":
+        "diamond_axe",
 
-    "palo": "stick",
-    "palos": "stick",
+    "azada de diamante":
+        "diamond_hoe",
 
-    "diamante": "diamond",
+    "mesa de crafteo":
+        "crafting_table",
 
-    "oro": "gold_ingot",
-    "lingote de oro": "gold_ingot",
+    "mesa de trabajo":
+        "crafting_table",
 
-    "hierro": "iron_ingot",
-    "lingote de hierro": "iron_ingot",
+    "horno":
+        "furnace",
 
-    "madera": "oak_log",
-    "tronco de roble": "oak_log",
+    "piedra":
+        "stone",
 
-    "tablones": "oak_planks",
-    "tablones de roble": "oak_planks",
+    "piedra labrada":
+        "stone",
+
+    "cobblestone":
+        "cobblestone",
+
+    "piedra bruta":
+        "cobblestone",
+
+    "cristal":
+        "glass",
+
+    "vidrio":
+        "glass",
+
+    "arena":
+        "sand",
+
+    "palo":
+        "stick",
+
+    "palos":
+        "stick",
+
+    "diamante":
+        "diamond",
+
+    "oro":
+        "gold_ingot",
+
+    "lingote de oro":
+        "gold_ingot",
+
+    "hierro":
+        "iron_ingot",
+
+    "lingote de hierro":
+        "iron_ingot",
+
+    "madera":
+        "oak_log",
+
+    "tronco de roble":
+        "oak_log",
+
+    "tablones":
+        "oak_planks",
+
+    "tablones de roble":
+        "oak_planks",
 }
 
 
@@ -876,8 +1156,6 @@ def buscar_item(
     # ID EXACTO
     # --------------------------------------------------------
 
-    exacto = None
-
     id_busqueda = normalizado.replace(
         " ",
         "_",
@@ -889,18 +1167,13 @@ def buscar_item(
             "name"
         ) == id_busqueda:
 
-            exacto = item
-            break
-
-    if exacto:
-
-        return preparar_item(
-            exacto,
-            idioma,
-        )
+            return preparar_item(
+                item,
+                idioma,
+            )
 
     # --------------------------------------------------------
-    # BUSQUEDA POR NOMBRE
+    # BÚSQUEDA POR NOMBRE
     # --------------------------------------------------------
 
     candidatos = []
@@ -927,21 +1200,31 @@ def buscar_item(
             display
         )
 
-        if normalizado == nombre_normalizado:
+        if (
+            normalizado
+            == nombre_normalizado
+        ):
             score += 100
 
-        if normalizado == display_normalizado:
+        if (
+            normalizado
+            == display_normalizado
+        ):
             score += 100
 
-        if normalizado in nombre_normalizado:
+        if (
+            normalizado
+            in nombre_normalizado
+        ):
             score += 50
 
-        if normalizado in display_normalizado:
+        if (
+            normalizado
+            in display_normalizado
+        ):
             score += 50
 
-        palabras = normalizado.split()
-
-        for palabra in palabras:
+        for palabra in normalizado.split():
 
             if palabra in nombre_normalizado:
                 score += 10
@@ -992,51 +1275,64 @@ def preparar_item(
         "",
     )
 
-    # IMPORTANTE:
-    # conservamos TODOS los datos originales
-    resultado = dict(item)
-
-    resultado["identifier"] = identifier
-
-    resultado["translatedName"] = (
-        traducir_identificador(
-            identifier,
-            idioma,
-        )
+    # NO eliminar información original.
+    resultado = dict(
+        item
     )
 
-    # Recetas reales de Minecraft
-    resultado["recipes"] = (
-        obtener_recetas_item(
-            identifier
-        )
+    # ID
+    resultado[
+        "identifier"
+    ] = identifier
+
+    # Nombre traducido
+    resultado[
+        "translatedName"
+    ] = traducir_identificador(
+        identifier,
+        idioma,
     )
 
-    # Información de fabricación
-    if resultado["recipes"]:
+    # Recetas reales
+    resultado[
+        "recipes"
+    ] = obtener_recetas_item(
+        identifier
+    )
 
-        mesas = []
+    # Mesas de fabricación
+    mesas = []
 
-        for receta in resultado["recipes"]:
+    for receta in resultado[
+        "recipes"
+    ]:
 
-            mesa = receta.get(
-                "mesa"
+        mesa = receta.get(
+            "mesa"
+        )
+
+        if (
+            mesa
+            and mesa not in mesas
+        ):
+            mesas.append(
+                mesa
             )
 
-            if mesa and mesa not in mesas:
-                mesas.append(mesa)
+    resultado[
+        "mesas_fabricacion"
+    ] = mesas
 
-        resultado["mesas_fabricacion"] = mesas
+    # Categoría
+    if not resultado.get(
+        "category"
+    ):
 
-    else:
-        resultado["mesas_fabricacion"] = []
-
-    # Mantener categoría si existe
-    if "category" not in resultado:
-        resultado["category"] = (
-            resultado.get(
-                "type"
-            )
+        resultado[
+            "category"
+        ] = resultado.get(
+            "type",
+            "misc",
         )
 
     return resultado
