@@ -1,49 +1,71 @@
 # datos/idiomas.py
 
 import json
-import os
-import zipfile
 from pathlib import Path
 from urllib.request import Request, urlopen
 
+
 MINECRAFT_VERSION = "26.1.2"
+
 IDIOMA_DEFECTO = "es_es"
 
 CACHE_DIR = Path("/tmp/minecraft_fullguide_languages")
 CACHE_DIR.mkdir(parents=True, exist_ok=True)
+
 
 IDIOMAS = {
     "es": "es_es",
     "espanol": "es_es",
     "español": "es_es",
     "spanish": "es_es",
+
+    "en": "en_us",
     "ingles": "en_us",
     "inglés": "en_us",
     "english": "en_us",
+
+    "ja": "ja_jp",
     "japones": "ja_jp",
     "japonés": "ja_jp",
     "japanese": "ja_jp",
+
+    "fr": "fr_fr",
     "frances": "fr_fr",
     "francés": "fr_fr",
     "french": "fr_fr",
+
+    "de": "de_de",
     "aleman": "de_de",
     "alemán": "de_de",
     "german": "de_de",
+
+    "it": "it_it",
     "italiano": "it_it",
     "italian": "it_it",
+
+    "pt": "pt_pt",
     "portugues": "pt_pt",
     "portugués": "pt_pt",
     "portuguese": "pt_pt",
+
+    "br": "pt_br",
     "brasileno": "pt_br",
     "brasileño": "pt_br",
     "brazilian": "pt_br",
+
+    "ru": "ru_ru",
     "ruso": "ru_ru",
     "russian": "ru_ru",
+
+    "zh": "zh_cn",
     "chino": "zh_cn",
     "chinese": "zh_cn",
+
+    "ko": "ko_kr",
     "coreano": "ko_kr",
     "korean": "ko_kr",
 }
+
 
 NOMBRES_IDIOMAS = {
     "es_es": "Español",
@@ -59,8 +81,26 @@ NOMBRES_IDIOMAS = {
     "ko_kr": "한국어",
 }
 
-_client_jar = None
+
 _cache_idiomas = {}
+
+
+def descargar(url):
+    request = Request(
+        url,
+        headers={
+            "User-Agent": (
+                "Mozilla/5.0 "
+                "MinecraftFullGuideBot/1.0"
+            )
+        },
+    )
+
+    with urlopen(
+        request,
+        timeout=60,
+    ) as response:
+        return response.read()
 
 
 def normalizar_idioma(valor):
@@ -75,62 +115,58 @@ def normalizar_idioma(valor):
     if valor in NOMBRES_IDIOMAS:
         return valor
 
-    if "_" in valor and len(valor) == 5:
+    # Permitir directamente códigos como es_es,
+    # en_us, ja_jp, etc.
+    if (
+        len(valor) == 5
+        and valor[2] == "_"
+    ):
         return valor
 
     return IDIOMA_DEFECTO
 
 
-def obtener_url_manifest():
-    return (
-        "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json"
+def _cargar_desde_url(idioma):
+    """
+    Descarga el archivo de idioma oficial correspondiente
+    a la versión de Minecraft configurada.
+    """
+
+    urls = [
+        (
+            "https://assets.mcasset.cloud/"
+            f"{MINECRAFT_VERSION}/assets/minecraft/"
+            f"lang/{idioma}.json"
+        ),
+        (
+            "https://mcasset.cloud/"
+            f"{MINECRAFT_VERSION}/assets/minecraft/"
+            f"lang/{idioma}.json"
+        ),
+    ]
+
+    ultimo_error = None
+
+    for url in urls:
+        try:
+            contenido = descargar(url)
+
+            datos = json.loads(
+                contenido.decode("utf-8")
+            )
+
+            if isinstance(datos, dict):
+                return datos
+
+        except Exception as error:
+            ultimo_error = error
+
+    if ultimo_error:
+        raise ultimo_error
+
+    raise RuntimeError(
+        f"No se pudo cargar el idioma {idioma}."
     )
-
-
-def descargar_url(url):
-    req = Request(
-        url,
-        headers={"User-Agent": "MinecraftFullGuideBot/1.0"},
-    )
-
-    with urlopen(req, timeout=60) as response:
-        return response.read()
-
-
-def obtener_client_jar():
-    global _client_jar
-
-    if _client_jar and _client_jar.exists():
-        return _client_jar
-
-    cache = CACHE_DIR / f"minecraft-{MINECRAFT_VERSION}.jar"
-
-    if cache.exists():
-        _client_jar = cache
-        return cache
-
-    manifest = json.loads(descargar_url(obtener_url_manifest()))
-
-    version_url = None
-
-    for version in manifest.get("versions", []):
-        if version.get("id") == MINECRAFT_VERSION:
-            version_url = version.get("url")
-            break
-
-    if not version_url:
-        raise RuntimeError(
-            f"No se encontró Minecraft Java {MINECRAFT_VERSION}."
-        )
-
-    version_data = json.loads(descargar_url(version_url))
-    client_url = version_data["downloads"]["client"]["url"]
-
-    data = descargar_url(client_url)
-    cache.write_bytes(data)
-
-    _client_jar = cache
-    return cache
 
 
 def cargar_idioma(idioma):
@@ -139,33 +175,34 @@ def cargar_idioma(idioma):
     if idioma in _cache_idiomas:
         return _cache_idiomas[idioma]
 
-    cache_file = CACHE_DIR / f"{idioma}.json"
+    archivo_cache = (
+        CACHE_DIR / f"{idioma}.json"
+    )
 
-    if cache_file.exists():
+    # Primero usamos cache.
+    if archivo_cache.exists():
         try:
             datos = json.loads(
-                cache_file.read_text(encoding="utf-8")
+                archivo_cache.read_text(
+                    encoding="utf-8"
+                )
             )
-            _cache_idiomas[idioma] = datos
-            return datos
+
+            if isinstance(datos, dict):
+                _cache_idiomas[idioma] = datos
+                return datos
+
         except Exception:
             pass
 
-    jar = obtener_client_jar()
+    # Descarga directa de los assets.
+    datos = _cargar_desde_url(idioma)
 
-    ruta = f"assets/minecraft/lang/{idioma}.json"
-
-    with zipfile.ZipFile(jar, "r") as zf:
-        if ruta not in zf.namelist():
-            idioma = IDIOMA_DEFECTO
-            ruta = f"assets/minecraft/lang/{idioma}.json"
-
-        datos = json.loads(
-            zf.read(ruta).decode("utf-8")
-        )
-
-    cache_file.write_text(
-        json.dumps(datos, ensure_ascii=False),
+    archivo_cache.write_text(
+        json.dumps(
+            datos,
+            ensure_ascii=False,
+        ),
         encoding="utf-8",
     )
 
@@ -174,8 +211,19 @@ def cargar_idioma(idioma):
     return datos
 
 
-def traducir_identificador(identifier, idioma=IDIOMA_DEFECTO):
+def traducir_identificador(
+    identifier,
+    idioma=IDIOMA_DEFECTO,
+):
+    if not identifier:
+        return ""
+
     identifier = str(identifier)
+
+    if identifier.startswith("#"):
+        identifier = identifier[1:]
+
+    idioma = normalizar_idioma(idioma)
 
     datos = cargar_idioma(idioma)
 
@@ -183,19 +231,32 @@ def traducir_identificador(identifier, idioma=IDIOMA_DEFECTO):
         f"item.minecraft.{identifier}",
         f"block.minecraft.{identifier}",
         f"entity.minecraft.{identifier}",
+        f"effect.minecraft.{identifier}",
+        f"enchantment.minecraft.{identifier}",
+        f"potion.minecraft.{identifier}",
     ]
 
     for clave in claves:
-        if clave in datos:
-            return datos[clave]
+        valor = datos.get(clave)
 
-    return identifier.replace("_", " ").title()
+        if valor:
+            return valor
 
+    # Algunos nombres pueden existir bajo
+    # claves que no empiezan exactamente por
+    # item.minecraft o block.minecraft.
+    sufijo = f".{identifier}"
 
-def establecer_idioma_usuario(context, idioma):
-    idioma = normalizar_idioma(idioma)
-    context.user_data["idioma"] = idioma
-    return idioma
+    for clave, valor in datos.items():
+        if clave.endswith(sufijo):
+            if isinstance(valor, str):
+                return valor
+
+    # Último fallback.
+    return identifier.replace(
+        "_",
+        " ",
+    ).title()
 
 
 def obtener_idioma_usuario(context):
@@ -204,4 +265,27 @@ def obtener_idioma_usuario(context):
             "idioma",
             IDIOMA_DEFECTO,
         )
-)
+    )
+
+
+def establecer_idioma_usuario(
+    context,
+    idioma,
+):
+    idioma = normalizar_idioma(idioma)
+
+    # Comprobamos que realmente exista.
+    cargar_idioma(idioma)
+
+    context.user_data["idioma"] = idioma
+
+    return idioma
+
+
+def obtener_nombre_idioma(idioma):
+    idioma = normalizar_idioma(idioma)
+
+    return NOMBRES_IDIOMAS.get(
+        idioma,
+        idioma,
+    )
