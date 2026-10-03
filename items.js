@@ -483,7 +483,7 @@ const items = [
     daño: "",
     receta: "",
     mesa:"",
-    img:"https://static.wikia.nocookie.net/minecraft_es_gamepedia/images/4/43/Alquimia-Recetas-Actualizado-04-25.png/revision/latest?cb=20250419234741"
+    img:"assets/craft/recetas.png"
   },
   {
     nombre: "🧪 Poción de Regeneración",
