@@ -477,7 +477,7 @@ const items = [
   {
     nombre: "Receta de las Pociones",
     id: "",
-    categoria: "",
+    categoria: "Equipo",
     stack: "",
     durabilidad: "",
     daño: "",
@@ -912,6 +912,50 @@ const items = [
     img: "assets/craft/botas_cuero.png"
   },
   {
+    nombre: "🪖 Casco de Cobre",
+    id: "minecraft:copper_helmet",
+    categoria: "Equipo",
+    stack: 1,
+    durabilidad: 121,
+    daño: 0,
+    receta: "5 Lingotes de cobre",
+    mesa: "Mesa de crafteo",
+    img: "assets/craft/casco_cobre.png"
+  },
+  {
+    nombre: "🦺 Pechera de Cobre",
+    id: "minecraft:copper_chestplate",
+    categoria: "Equipo",
+    stack: 1,
+    durabilidad: 176,
+    daño: 0,
+    receta: "8 Lingotes de cobre",
+    mesa: "Mesa de crafteo",
+    img: "assets/craft/pechera_cobre.png"
+  },
+  {
+    nombre: "👖 Pantalones de Cobre",
+    id: "minecraft:copper_leggings",
+    categoria: "Equipo",
+    stack: 1,
+    durabilidad: 165,
+    daño: 0,
+    receta: "7 Lingotes de cobre",
+    mesa: "Mesa de crafteo",
+    img: "assets/craft/pantalones_cobre.png"
+  },
+  {
+    nombre: "🥾 Botas de Cobre",
+    id: "minecraft:copper_boots",
+    categoria: "Equipo",
+    stack: 1,
+    durabilidad: 143,
+    daño: 0,
+    receta: "4 Lingotes de cobre",
+    mesa: "Mesa de crafteo",
+    img: "assets/craft/botas_cobre.png"
+  },
+  {
     nombre: "🪖 Casco de Hierro",
     id: "minecraft:iron_helmet",
     categoria: "Equipo",
@@ -1055,6 +1099,17 @@ const items = [
     receta: "7 Cuero",
     mesa: "Mesa de crafteo",
     img: "assets/craft/caballo_cuero.png"
+  },
+  {
+    nombre: "🐴 Armadura de Caballo de Cobre",
+    id: "minecraft:copper_horse_armor",
+    categoria: "Equipo",
+    stack: 1,
+    durabilidad: 0,
+    daño: 0,
+    receta: "7 Lingotes de cobre",
+    mesa: "Mesa de crafteo",
+    img: "assets/craft/caballo_cobre.png"
   },
   {
     nombre: "🐴 Armadura de Caballo de Hierro",
