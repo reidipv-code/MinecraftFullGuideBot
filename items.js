@@ -418,6 +418,17 @@ const items = [
     img: "assets/craft/lanza_piedra.png"
   },
   {
+    nombre: "🔱 Lanza de cobre",
+    id: "minecraft:copper_spear",
+    categoria: "Herramientas",
+    stack: 1,
+    durabilidad: 190,
+    daño: 1,
+    receta: "1 Lingote de Cobre + 2 Palos",
+    mesa: "Mesa de crafteo",
+    img: "assets/craft/lanza_cobre.png"
+  },
+  {
     nombre: "🔱 Lanza de hierro",
     id: "minecraft:iron_spear",
     categoria: "Herramientas",
