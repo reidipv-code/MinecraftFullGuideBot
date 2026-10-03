@@ -1,4 +1,6 @@
 const { Telegraf } = require("telegraf");
+const fs = require("fs");
+const path = require("path");
 const items = require("./items");
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
@@ -15,13 +17,13 @@ function buscarItem(nombreBuscado) {
 }
 
 function formatearItem(item) {
-  return `📦 *${item.nombre}*\n\n` +
-    `🆔 \`${item.id}\`\n` +
+  return `<b>📦 ${item.nombre}</b>\n\n` +
+    `🆔 <code>${item.id}</code>\n` +
     `🗂️ Categoría: ${item.categoria}\n` +
     `📦 Stack: ${item.stack}\n` +
     `🛡️ Durabilidad: ${item.durabilidad}\n` +
     `⚔️ Daño: ${item.daño}\n\n` +
-    `🔨 Receta\n${item.receta}\n\n` +
+    `🔨 <b>Receta</b>\n${item.receta}\n\n` +
     `🛠️ Se fabrica con: ${item.mesa}`;
 }
 
@@ -32,18 +34,18 @@ bot.on("text", async (ctx) => {
     return ctx.reply(
       "❌ Ese comando no existe.\n\n" +
       "Usa el formato correcto:\n" +
-      "`/item pico de diamante`",
-      { parse_mode: "Markdown" }
+      "<code>/item pico de diamante</code>",
+      { parse_mode: "HTML" }
     );
   }
 
   if (texto === "/item") {
     return ctx.reply(
-      "📖 *Uso de /item*\n\n" +
-      "😱 Uso: `/item <nombre del ítem>`\n" +
-      "👨‍🏫 Ejemplo: `/item pico de diamante`\n\n" +
+      "<b>📖 Uso de /item</b>\n\n" +
+      "😱 Uso: <code>/item &lt;nombre del ítem&gt;</code>\n" +
+      "👨‍🏫 Ejemplo: <code>/item pico de diamante</code>\n\n" +
       "⚠️ No uses guiones bajos, usa espacios.",
-      { parse_mode: "Markdown" }
+      { parse_mode: "HTML" }
     );
   }
 
@@ -53,23 +55,31 @@ bot.on("text", async (ctx) => {
 
     if (!item) {
       return ctx.reply(
-        `❌ No encontré el ítem: *${nombre}*\n\n` +
-        "Revisa la ortografía o usa `/item` para ver la guía.",
-        { parse_mode: "Markdown" }
+        `❌ No encontré el ítem: <b>${nombre}</b>\n\n` +
+        "Revisa la ortografía o usa <code>/item</code> para ver la guía.",
+        { parse_mode: "HTML" }
       );
     }
 
+    const caption = formatearItem(item);
+
     if (item.img) {
+      const rutaAbsoluta = path.join(__dirname, item.img);
+      console.log("🔍 Intentando enviar imagen desde:", rutaAbsoluta);
+      console.log("📁 ¿Existe el archivo?", fs.existsSync(rutaAbsoluta));
+
       try {
-        await ctx.replyWithPhoto(item.img, {
-          caption: formatearItem(item),
-          parse_mode: "Markdown"
-        });
+        await ctx.replyWithPhoto(
+          { source: fs.createReadStream(rutaAbsoluta) },
+          { caption, parse_mode: "HTML" }
+        );
+        console.log("✅ Imagen enviada correctamente");
       } catch (e) {
-        await ctx.reply(formatearItem(item), { parse_mode: "Markdown" });
+        console.error("❌ Error al enviar imagen:", e.message);
+        await ctx.reply(caption, { parse_mode: "HTML" });
       }
     } else {
-      await ctx.reply(formatearItem(item), { parse_mode: "Markdown" });
+      await ctx.reply(caption, { parse_mode: "HTML" });
     }
   }
 });
