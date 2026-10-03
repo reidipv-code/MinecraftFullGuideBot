@@ -1276,7 +1276,7 @@ const items = [
     stack: 1,
     durabilidad: 0,
     daño: 0,
-    receta: "4 Hilos + 1 Bola de Slime",
+    receta: "4 Hilos + 1 Bola de Slime (en versiones anteriores a la 1.21.60), 5 Hilos (en versiones posteriores a la 1.21.60)",
     mesa: "Mesa de crafteo",
     img: "assets/craft/rienda.png, assets/craft/rienda2.png"
   },
