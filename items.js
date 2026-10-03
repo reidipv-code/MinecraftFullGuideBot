@@ -1467,8 +1467,8 @@ const items = [
     stack: 16,
     durabilidad: 0,
     daño: 0,
-    receta: "4 Bolas de Nieve (de nieve)",
-    mesa: "Mesa de crafteo",
+    receta: "No se fabrica. Se consigue minando bloques o capas de nieve.",
+    mesa: "No tiene",
     img: "assets/craft/bola_nieve.png"
   },
   {
