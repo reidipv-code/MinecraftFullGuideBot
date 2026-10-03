@@ -16,7 +16,6 @@ function buscarItem(nombreBuscado) {
   });
 }
 
-// Convierte cualquier cosa en string seguro
 function valido(v) {
   if (v === undefined || v === null) return false;
   const s = String(v).trim();
@@ -80,12 +79,23 @@ bot.on("text", async (ctx) => {
     const caption = formatearItem(item);
 
     if (valido(item.img)) {
-      const rutaAbsoluta = path.join(__dirname, item.img);
+      const rutas = item.img.split(",").map(r => r.trim());
+
       try {
+        // Primera imagen con el caption
+        const primera = path.join(__dirname, rutas[0]);
         await ctx.replyWithPhoto(
-          { source: fs.createReadStream(rutaAbsoluta) },
+          { source: fs.createReadStream(primera) },
           { caption, parse_mode: "HTML" }
         );
+
+        // Resto de imágenes sin caption
+        for (let i = 1; i < rutas.length; i++) {
+          const siguiente = path.join(__dirname, rutas[i]);
+          await ctx.replyWithPhoto(
+            { source: fs.createReadStream(siguiente) }
+          );
+        }
       } catch (e) {
         console.error("❌ Error al enviar imagen:", e.message);
         await ctx.reply(caption, { parse_mode: "HTML" });
