@@ -475,9 +475,20 @@ const items = [
 
   // ==================== POCIONES ====================
   {
+    nombre: "Receta de las Pociones",
+    id:"",
+    categoria: "Herramientas",
+    stack: "",
+    durabilidad: "",
+    daño: "",
+    receta: "",
+    mesa:"",
+    img:"https://static.wikia.nocookie.net/minecraft_es_gamepedia/images/4/43/Alquimia-Recetas-Actualizado-04-25.png/revision/latest?cb=20250419234741"
+  },
+  {
     nombre: "🧪 Poción de Regeneración",
     id: "minecraft:potion",
-    categoria: "Pociones",
+    categoria: "Herramientas",
     stack: 1,
     durabilidad: 0,
     daño: 0,
