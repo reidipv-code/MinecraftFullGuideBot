@@ -1,1 +1,0 @@
-# Funciones internas de MinecraftFullGuideBot.
