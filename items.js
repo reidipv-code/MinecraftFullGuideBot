@@ -1202,6 +1202,17 @@ const items = [
 
   // ==================== ARMADURAS DE NAUTILUS ====================
   {
+    nombre: "🐚 Armadura de Nautilus de Cuero",
+    id: "minecraft:leather_nautilus_armor",
+    categoria: "Equipo",
+    stack: 1,
+    durabilidad: 0,
+    daño: 0,
+    receta: "No se fabrica. Se encuentra en cofres de Tesoros Enterrados, Ruinas Oceánicas y Naufragios",
+    mesa: "Ninguna",
+    img: "assets/craft/nautilus_cuero.png"
+  },
+  {
     nombre: "🐚 Armadura de Nautilus de Cobre",
     id: "minecraft:copper_nautilus_armor",
     categoria: "Equipo",
@@ -1276,9 +1287,9 @@ const items = [
     stack: 1,
     durabilidad: 0,
     daño: 0,
-    receta: "4 Hilos + 1 Bola de Slime (en versiones anteriores a la 1.21.60), 5 Hilos (en versiones posteriores a la 1.21.60)",
+    receta: "4 Hilos + 1 Bola de Slime",
     mesa: "Mesa de crafteo",
-    img: "assets/craft/rienda1.png, assets/craft/rienda2.png"
+    img: "assets/craft/rienda.png,assets/craft/rienda2.png"
   },
 
   // ==================== COMIDA ====================
@@ -1336,6 +1347,17 @@ const items = [
     receta: "1 Cuenco + 1 Flor + 1 Champiñón + 1 Seta",
     mesa: "Mesa de crafteo",
     img: "assets/craft/estofado_sospechoso.png"
+  },
+  {
+    nombre: "🍲 Sopa de Remolacha",
+    id: "minecraft:beetroot_soup",
+    categoria: "Equipo",
+    stack: 1,
+    durabilidad: 0,
+    daño: 0,
+    receta: "6 Remolachas + 1 Cuenco",
+    mesa: "Mesa de crafteo",
+    img: "assets/craft/sopa_remolacha.png"
   },
   {
     nombre: "🥔 Patata Cocida",
@@ -1437,17 +1459,6 @@ const items = [
     img: "assets/craft/cordero_cocido.png"
   },
   {
-    nombre: "🥔 Patata Venenosa",
-    id: "minecraft:poisonous_potato",
-    categoria: "Equipo",
-    stack: 64,
-    durabilidad: 0,
-    daño: 0,
-    receta: "No se fabrica. Se obtiene al cosechar patatas",
-    mesa: "Ninguna",
-    img: "assets/craft/patata_venenosa.png"
-  },
-  {
     nombre: "🌿 Alga Marina Seca",
     id: "minecraft:dried_kelp",
     categoria: "Equipo",
@@ -1467,8 +1478,8 @@ const items = [
     stack: 16,
     durabilidad: 0,
     daño: 0,
-    receta: "No se fabrica. Se consigue minando bloques o capas de nieve.",
-    mesa: "No tiene",
+    receta: "4 Bolas de Nieve (de nieve)",
+    mesa: "Mesa de crafteo",
     img: "assets/craft/bola_nieve.png"
   },
   {
