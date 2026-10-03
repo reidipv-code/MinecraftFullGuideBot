@@ -1,14 +1,11 @@
-require("dotenv").config();
 const { Telegraf } = require("telegraf");
 const items = require("./items");
 
-const bot = new Telegraf(process.env.TOKEN);
+const bot = new Telegraf(process.env.BOT_TOKEN);
 
-// Función para buscar un ítem por nombre (ignora mayúsculas y emojis)
 function buscarItem(nombreBuscado) {
   const limpio = nombreBuscado.toLowerCase().trim();
   return items.find(i => {
-    // Quitamos emojis y espacios extra del nombre guardado
     const nombreLimpio = i.nombre
       .replace(/[^\p{L}\p{N}\s]/gu, "")
       .toLowerCase()
@@ -17,7 +14,6 @@ function buscarItem(nombreBuscado) {
   });
 }
 
-// Formatear el mensaje del ítem
 function formatearItem(item) {
   return `📦 *${item.nombre}*\n\n` +
     `🆔 \`${item.id}\`\n` +
@@ -32,7 +28,6 @@ function formatearItem(item) {
 bot.on("text", async (ctx) => {
   const texto = ctx.message.text.trim();
 
-  // ❌ Bloquear formato con guiones bajos
   if (texto.startsWith("/item_")) {
     return ctx.reply(
       "❌ Ese comando no existe.\n\n" +
@@ -42,7 +37,6 @@ bot.on("text", async (ctx) => {
     );
   }
 
-  // 📖 Mostrar guía si solo escribe /item
   if (texto === "/item") {
     return ctx.reply(
       "📖 *Uso de /item*\n\n" +
@@ -53,7 +47,6 @@ bot.on("text", async (ctx) => {
     );
   }
 
-  // ✅ Procesar /item con espacios
   if (texto.startsWith("/item ")) {
     const nombre = texto.replace("/item ", "").trim();
     const item = buscarItem(nombre);
@@ -66,7 +59,6 @@ bot.on("text", async (ctx) => {
       );
     }
 
-    // Enviar imagen + texto
     if (item.img) {
       try {
         await ctx.replyWithPhoto(item.img, {
@@ -74,7 +66,6 @@ bot.on("text", async (ctx) => {
           parse_mode: "Markdown"
         });
       } catch (e) {
-        // Si la imagen falla, manda solo el texto
         await ctx.reply(formatearItem(item), { parse_mode: "Markdown" });
       }
     } else {
