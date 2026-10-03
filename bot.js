@@ -5,14 +5,22 @@ const items = require("./items");
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
+// Normaliza texto: quita tildes, pasa a minúsculas y quita emojis
+function normalizar(texto) {
+  return String(texto)
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^\p{L}\p{N}\s]/gu, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 function buscarItem(nombreBuscado) {
-  const limpio = nombreBuscado.toLowerCase().trim();
+  const buscado = normalizar(nombreBuscado);
   return items.find(i => {
-    const nombreLimpio = i.nombre
-      .replace(/[^\p{L}\p{N}\s]/gu, "")
-      .toLowerCase()
-      .trim();
-    return nombreLimpio === limpio || nombreLimpio.includes(limpio);
+    const nombreItem = normalizar(i.nombre);
+    return nombreItem === buscado || nombreItem.includes(buscado);
   });
 }
 
