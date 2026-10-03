@@ -16,15 +16,31 @@ function buscarItem(nombreBuscado) {
   });
 }
 
+// Convierte cualquier cosa en string seguro
+function valido(v) {
+  if (v === undefined || v === null) return false;
+  const s = String(v).trim();
+  return s !== "" && s !== "0" && s !== "0.0";
+}
+
 function formatearItem(item) {
-  return `<b>📦 ${item.nombre}</b>\n\n` +
-    `🆔 <code>${item.id}</code>\n` +
-    `🗂️ Categoría: ${item.categoria}\n` +
-    `📦 Stack: ${item.stack}\n` +
-    `🛡️ Durabilidad: ${item.durabilidad}\n` +
-    `⚔️ Daño: ${item.daño}\n\n` +
-    `🔨 <b>Receta</b>\n${item.receta}\n\n` +
-    `🛠️ Se fabrica con: ${item.mesa}`;
+  let msg = `<b>${item.nombre}</b>\n\n`;
+
+  if (valido(item.id))          msg += `🆔 <code>${item.id}</code>\n`;
+  if (valido(item.categoria))   msg += `🗂️ Categoría: ${item.categoria}\n`;
+  if (valido(item.stack))       msg += `📦 Stack: ${item.stack}\n`;
+  if (valido(item.durabilidad)) msg += `🛡️ Durabilidad: ${item.durabilidad}\n`;
+  if (valido(item.daño))        msg += `⚔️ Daño: ${item.daño}\n`;
+
+  if (valido(item.receta)) {
+    msg += `\n🔨 <b>Receta</b>\n${item.receta}\n`;
+  }
+
+  if (valido(item.mesa)) {
+    msg += `\n🛠️ Se fabrica con: ${item.mesa}`;
+  }
+
+  return msg.trim();
 }
 
 bot.on("text", async (ctx) => {
@@ -63,17 +79,13 @@ bot.on("text", async (ctx) => {
 
     const caption = formatearItem(item);
 
-    if (item.img) {
+    if (valido(item.img)) {
       const rutaAbsoluta = path.join(__dirname, item.img);
-      console.log("🔍 Intentando enviar imagen desde:", rutaAbsoluta);
-      console.log("📁 ¿Existe el archivo?", fs.existsSync(rutaAbsoluta));
-
       try {
         await ctx.replyWithPhoto(
           { source: fs.createReadStream(rutaAbsoluta) },
           { caption, parse_mode: "HTML" }
         );
-        console.log("✅ Imagen enviada correctamente");
       } catch (e) {
         console.error("❌ Error al enviar imagen:", e.message);
         await ctx.reply(caption, { parse_mode: "HTML" });
