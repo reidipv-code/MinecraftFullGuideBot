@@ -1278,7 +1278,7 @@ const items = [
     daño: 0,
     receta: "4 Hilos + 1 Bola de Slime",
     mesa: "Mesa de crafteo",
-    img: "assets/craft/rienda.png"
+    img: "assets/craft/rienda.png, assets/craft/rienda2.png"
   },
 
   // ==================== COMIDA ====================
