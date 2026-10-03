@@ -3,7 +3,7 @@ const items = [
   {
     nombre: "🪵 Pico de madera",
     id: "minecraft:wooden_pickaxe",
-    categoria: "Herramientas",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 59,
     daño: 2,
@@ -14,7 +14,7 @@ const items = [
   {
     nombre: "🪨 Pico de piedra",
     id: "minecraft:stone_pickaxe",
-    categoria: "Herramientas",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 131,
     daño: 3,
@@ -25,7 +25,7 @@ const items = [
   {
     nombre: "🟠 Pico de cobre",
     id: "minecraft:copper_pickaxe",
-    categoria: "Herramientas",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 190,
     daño: 3,
@@ -36,7 +36,7 @@ const items = [
   {
     nombre: "⚙️ Pico de hierro",
     id: "minecraft:iron_pickaxe",
-    categoria: "Herramientas",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 250,
     daño: 4,
@@ -47,7 +47,7 @@ const items = [
   {
     nombre: "🪙 Pico de oro",
     id: "minecraft:golden_pickaxe",
-    categoria: "Herramientas",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 32,
     daño: 2,
@@ -58,7 +58,7 @@ const items = [
   {
     nombre: "💎 Pico de diamante",
     id: "minecraft:diamond_pickaxe",
-    categoria: "Herramientas",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 1561,
     daño: 5,
@@ -69,7 +69,7 @@ const items = [
   {
     nombre: "🪨 Pico de netherita",
     id: "minecraft:netherite_pickaxe",
-    categoria: "Herramientas",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 2031,
     daño: 6,
@@ -82,7 +82,7 @@ const items = [
   {
     nombre: "🥄 Pala de madera",
     id: "minecraft:wooden_shovel",
-    categoria: "Herramientas",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 59,
     daño: 2.5,
@@ -93,7 +93,7 @@ const items = [
   {
     nombre: "🥄 Pala de piedra",
     id: "minecraft:stone_shovel",
-    categoria: "Herramientas",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 131,
     daño: 3.5,
@@ -104,7 +104,7 @@ const items = [
   {
     nombre: "🟠 Pala de cobre",
     id: "minecraft:copper_shovel",
-    categoria: "Herramientas",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 190,
     daño: 3.5,
@@ -115,7 +115,7 @@ const items = [
   {
     nombre: "⚙️ Pala de hierro",
     id: "minecraft:iron_shovel",
-    categoria: "Herramientas",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 250,
     daño: 4.5,
@@ -126,7 +126,7 @@ const items = [
   {
     nombre: "🪙 Pala de oro",
     id: "minecraft:golden_shovel",
-    categoria: "Herramientas",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 32,
     daño: 2.5,
@@ -137,7 +137,7 @@ const items = [
   {
     nombre: "💎 Pala de diamante",
     id: "minecraft:diamond_shovel",
-    categoria: "Herramientas",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 1561,
     daño: 5.5,
@@ -148,7 +148,7 @@ const items = [
   {
     nombre: "🥄 Pala de netherita",
     id: "minecraft:netherite_shovel",
-    categoria: "Herramientas",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 2031,
     daño: 6.5,
@@ -161,7 +161,7 @@ const items = [
   {
     nombre: "🗡️ Espada de madera",
     id: "minecraft:wooden_sword",
-    categoria: "Herramientas",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 59,
     daño: 4,
@@ -172,7 +172,7 @@ const items = [
   {
     nombre: "🗡️ Espada de piedra",
     id: "minecraft:stone_sword",
-    categoria: "Herramientas",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 131,
     daño: 5,
@@ -183,7 +183,7 @@ const items = [
   {
     nombre: "🗡️ Espada de cobre",
     id: "minecraft:copper_sword",
-    categoria: "Herramientas",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 190,
     daño: 5,
@@ -194,7 +194,7 @@ const items = [
   {
     nombre: "🗡️ Espada de hierro",
     id: "minecraft:iron_sword",
-    categoria: "Herramientas",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 250,
     daño: 6,
@@ -205,7 +205,7 @@ const items = [
   {
     nombre: "🗡️ Espada de oro",
     id: "minecraft:golden_sword",
-    categoria: "Herramientas",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 32,
     daño: 4,
@@ -216,7 +216,7 @@ const items = [
   {
     nombre: "🗡️ Espada de diamante",
     id: "minecraft:diamond_sword",
-    categoria: "Herramientas",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 1561,
     daño: 7,
@@ -227,7 +227,7 @@ const items = [
   {
     nombre: "🗡️ Espada de netherita",
     id: "minecraft:netherite_sword",
-    categoria: "Herramientas",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 2031,
     daño: 8,
@@ -240,7 +240,7 @@ const items = [
   {
     nombre: "🪓 Hacha de madera",
     id: "minecraft:wooden_axe",
-    categoria: "Herramientas",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 59,
     daño: 7,
@@ -251,7 +251,7 @@ const items = [
   {
     nombre: "🪓 Hacha de piedra",
     id: "minecraft:stone_axe",
-    categoria: "Herramientas",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 131,
     daño: 9,
@@ -262,7 +262,7 @@ const items = [
   {
     nombre: "🟠 Hacha de cobre",
     id: "minecraft:copper_axe",
-    categoria: "Herramientas",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 190,
     daño: 9,
@@ -273,7 +273,7 @@ const items = [
   {
     nombre: "⚙️ Hacha de hierro",
     id: "minecraft:iron_axe",
-    categoria: "Herramientas",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 250,
     daño: 9,
@@ -284,7 +284,7 @@ const items = [
   {
     nombre: "🪙 Hacha de oro",
     id: "minecraft:golden_axe",
-    categoria: "Herramientas",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 32,
     daño: 7,
@@ -295,7 +295,7 @@ const items = [
   {
     nombre: "💎 Hacha de diamante",
     id: "minecraft:diamond_axe",
-    categoria: "Herramientas",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 1561,
     daño: 9,
@@ -306,7 +306,7 @@ const items = [
   {
     nombre: "🪓 Hacha de netherita",
     id: "minecraft:netherite_axe",
-    categoria: "Herramientas",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 2031,
     daño: 10,
@@ -319,7 +319,7 @@ const items = [
   {
     nombre: "🌾 Azada de madera",
     id: "minecraft:wooden_hoe",
-    categoria: "Herramientas",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 59,
     daño: 1,
@@ -330,7 +330,7 @@ const items = [
   {
     nombre: "🌾 Azada de piedra",
     id: "minecraft:stone_hoe",
-    categoria: "Herramientas",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 131,
     daño: 1,
@@ -341,7 +341,7 @@ const items = [
   {
     nombre: "🌾 Azada de cobre",
     id: "minecraft:copper_hoe",
-    categoria: "Herramientas",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 190,
     daño: 1,
@@ -352,7 +352,7 @@ const items = [
   {
     nombre: "🌾 Azada de hierro",
     id: "minecraft:iron_hoe",
-    categoria: "Herramientas",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 250,
     daño: 1,
@@ -363,7 +363,7 @@ const items = [
   {
     nombre: "🌾 Azada de oro",
     id: "minecraft:golden_hoe",
-    categoria: "Herramientas",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 32,
     daño: 1,
@@ -374,7 +374,7 @@ const items = [
   {
     nombre: "🌾 Azada de diamante",
     id: "minecraft:diamond_hoe",
-    categoria: "Herramientas",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 1561,
     daño: 1,
@@ -385,7 +385,7 @@ const items = [
   {
     nombre: "🌾 Azada de netherita",
     id: "minecraft:netherite_hoe",
-    categoria: "Herramientas",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 2031,
     daño: 1,
@@ -398,7 +398,7 @@ const items = [
   {
     nombre: "🔱 Lanza de madera",
     id: "minecraft:wooden_spear",
-    categoria: "Herramientas",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 59,
     daño: 1,
@@ -409,7 +409,7 @@ const items = [
   {
     nombre: "🔱 Lanza de piedra",
     id: "minecraft:stone_spear",
-    categoria: "Herramientas",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 131,
     daño: 2,
@@ -420,7 +420,7 @@ const items = [
   {
     nombre: "🔱 Lanza de cobre",
     id: "minecraft:copper_spear",
-    categoria: "Herramientas",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 190,
     daño: 1,
@@ -431,7 +431,7 @@ const items = [
   {
     nombre: "🔱 Lanza de hierro",
     id: "minecraft:iron_spear",
-    categoria: "Herramientas",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 250,
     daño: 3,
@@ -442,7 +442,7 @@ const items = [
   {
     nombre: "🔱 Lanza de oro",
     id: "minecraft:golden_spear",
-    categoria: "Herramientas",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 32,
     daño: 1,
@@ -453,7 +453,7 @@ const items = [
   {
     nombre: "🔱 Lanza de diamante",
     id: "minecraft:diamond_spear",
-    categoria: "Herramientas",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 1561,
     daño: 4,
@@ -464,7 +464,7 @@ const items = [
   {
     nombre: "🔱 Lanza de netherita",
     id: "minecraft:netherite_spear",
-    categoria: "Herramientas",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 2031,
     daño: 5,
@@ -476,19 +476,19 @@ const items = [
   // ==================== POCIONES ====================
   {
     nombre: "Receta de las Pociones",
-    id:"",
-    categoria: "Herramientas",
+    id: "",
+    categoria: "",
     stack: "",
     durabilidad: "",
     daño: "",
     receta: "",
-    mesa:"",
-    img:"assets/craft/recetas.png"
+    mesa: "",
+    img: "assets/craft/recetas.png"
   },
   {
     nombre: "🧪 Poción de Regeneración",
     id: "minecraft:potion",
-    categoria: "Herramientas",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 0,
     daño: 0,
@@ -499,7 +499,7 @@ const items = [
   {
     nombre: "🧪 Poción de Rapidez",
     id: "minecraft:potion",
-    categoria: "Pociones",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 0,
     daño: 0,
@@ -510,7 +510,7 @@ const items = [
   {
     nombre: "🧪 Poción de Resistencia al Fuego",
     id: "minecraft:potion",
-    categoria: "Pociones",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 0,
     daño: 0,
@@ -521,7 +521,7 @@ const items = [
   {
     nombre: "🧪 Poción de Curación",
     id: "minecraft:potion",
-    categoria: "Pociones",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 0,
     daño: 0,
@@ -532,7 +532,7 @@ const items = [
   {
     nombre: "🧪 Poción de Visión Nocturna",
     id: "minecraft:potion",
-    categoria: "Pociones",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 0,
     daño: 0,
@@ -543,7 +543,7 @@ const items = [
   {
     nombre: "🧪 Poción de Fuerza",
     id: "minecraft:potion",
-    categoria: "Pociones",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 0,
     daño: 0,
@@ -554,7 +554,7 @@ const items = [
   {
     nombre: "🧪 Poción de Salto",
     id: "minecraft:potion",
-    categoria: "Pociones",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 0,
     daño: 0,
@@ -565,7 +565,7 @@ const items = [
   {
     nombre: "🧪 Poción de Respiración Acuática",
     id: "minecraft:potion",
-    categoria: "Pociones",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 0,
     daño: 0,
@@ -576,7 +576,7 @@ const items = [
   {
     nombre: "🧪 Poción de Invisibilidad",
     id: "minecraft:potion",
-    categoria: "Pociones",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 0,
     daño: 0,
@@ -587,7 +587,7 @@ const items = [
   {
     nombre: "🧪 Poción de Caída Lenta",
     id: "minecraft:potion",
-    categoria: "Pociones",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 0,
     daño: 0,
@@ -598,7 +598,7 @@ const items = [
   {
     nombre: "🧪 Poción del Maestro Tortuga",
     id: "minecraft:potion",
-    categoria: "Pociones",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 0,
     daño: 0,
@@ -609,7 +609,7 @@ const items = [
   {
     nombre: "🧪 Poción de Veneno",
     id: "minecraft:potion",
-    categoria: "Pociones",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 0,
     daño: 0,
@@ -620,7 +620,7 @@ const items = [
   {
     nombre: "🧪 Poción de Debilidad",
     id: "minecraft:potion",
-    categoria: "Pociones",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 0,
     daño: 0,
@@ -631,7 +631,7 @@ const items = [
   {
     nombre: "🧪 Poción de Lentitud",
     id: "minecraft:potion",
-    categoria: "Pociones",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 0,
     daño: 0,
@@ -642,7 +642,7 @@ const items = [
   {
     nombre: "🧪 Poción de Daño",
     id: "minecraft:potion",
-    categoria: "Pociones",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 0,
     daño: 0,
@@ -655,7 +655,7 @@ const items = [
   {
     nombre: "🧭 Brújula",
     id: "minecraft:compass",
-    categoria: "Herramientas",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 0,
     daño: 0,
@@ -666,7 +666,7 @@ const items = [
   {
     nombre: "🧭 Brújula de Recuperación",
     id: "minecraft:recovery_compass",
-    categoria: "Herramientas",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 0,
     daño: 0,
@@ -677,7 +677,7 @@ const items = [
   {
     nombre: "🗺️ Mapa Vacío",
     id: "minecraft:map",
-    categoria: "Herramientas",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 0,
     daño: 0,
@@ -688,7 +688,7 @@ const items = [
   {
     nombre: "🗺️ Mapa Localizador",
     id: "minecraft:filled_map",
-    categoria: "Herramientas",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 0,
     daño: 0,
@@ -699,7 +699,7 @@ const items = [
   {
     nombre: "⏰ Reloj",
     id: "minecraft:clock",
-    categoria: "Herramientas",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 0,
     daño: 0,
@@ -712,7 +712,7 @@ const items = [
   {
     nombre: "🔥 Mechero",
     id: "minecraft:flint_and_steel",
-    categoria: "Herramientas",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 64,
     daño: 0,
@@ -723,7 +723,7 @@ const items = [
   {
     nombre: "✂️ Tijeras",
     id: "minecraft:shears",
-    categoria: "Herramientas",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 238,
     daño: 0,
@@ -734,7 +734,7 @@ const items = [
   {
     nombre: "🪣 Cubo",
     id: "minecraft:bucket",
-    categoria: "Herramientas",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 0,
     daño: 0,
@@ -745,7 +745,7 @@ const items = [
   {
     nombre: "🎣 Caña de Pescar",
     id: "minecraft:fishing_rod",
-    categoria: "Herramientas",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 64,
     daño: 0,
@@ -756,7 +756,7 @@ const items = [
   {
     nombre: "🥕 Zanahoria en un Palo",
     id: "minecraft:carrot_on_a_stick",
-    categoria: "Herramientas",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 25,
     daño: 0,
@@ -767,7 +767,7 @@ const items = [
   {
     nombre: "🍄 Hongo Distorsionado en un Palo",
     id: "minecraft:warped_fungus_on_a_stick",
-    categoria: "Herramientas",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 25,
     daño: 0,
@@ -778,7 +778,7 @@ const items = [
   {
     nombre: "🪶 Elytra",
     id: "minecraft:elytra",
-    categoria: "Herramientas",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 432,
     daño: 0,
@@ -791,7 +791,7 @@ const items = [
   {
     nombre: "🏹 Arco",
     id: "minecraft:bow",
-    categoria: "Combate",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 384,
     daño: 0,
@@ -802,7 +802,7 @@ const items = [
   {
     nombre: "🎯 Ballesta",
     id: "minecraft:crossbow",
-    categoria: "Combate",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 465,
     daño: 0,
@@ -813,7 +813,7 @@ const items = [
   {
     nombre: "➡️ Flecha",
     id: "minecraft:arrow",
-    categoria: "Combate",
+    categoria: "Equipo",
     stack: 64,
     durabilidad: 0,
     daño: 0,
@@ -824,7 +824,7 @@ const items = [
   {
     nombre: "✨ Flecha Espectral",
     id: "minecraft:spectral_arrow",
-    categoria: "Combate",
+    categoria: "Equipo",
     stack: 64,
     durabilidad: 0,
     daño: 0,
@@ -835,7 +835,7 @@ const items = [
   {
     nombre: "🔱 Tridente",
     id: "minecraft:trident",
-    categoria: "Combate",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 250,
     daño: 9,
@@ -846,7 +846,7 @@ const items = [
   {
     nombre: "🛡️ Escudo",
     id: "minecraft:shield",
-    categoria: "Combate",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 336,
     daño: 0,
@@ -857,7 +857,7 @@ const items = [
   {
     nombre: "🗿 Tótem de la Inmortalidad",
     id: "minecraft:totem_of_undying",
-    categoria: "Combate",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 0,
     daño: 0,
@@ -870,7 +870,7 @@ const items = [
   {
     nombre: "🪖 Casco de Cuero",
     id: "minecraft:leather_helmet",
-    categoria: "Armadura",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 55,
     daño: 0,
@@ -881,7 +881,7 @@ const items = [
   {
     nombre: "🦺 Pechera de Cuero",
     id: "minecraft:leather_chestplate",
-    categoria: "Armadura",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 80,
     daño: 0,
@@ -892,7 +892,7 @@ const items = [
   {
     nombre: "👖 Pantalones de Cuero",
     id: "minecraft:leather_leggings",
-    categoria: "Armadura",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 75,
     daño: 0,
@@ -903,7 +903,7 @@ const items = [
   {
     nombre: "🥾 Botas de Cuero",
     id: "minecraft:leather_boots",
-    categoria: "Armadura",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 65,
     daño: 0,
@@ -914,7 +914,7 @@ const items = [
   {
     nombre: "🪖 Casco de Hierro",
     id: "minecraft:iron_helmet",
-    categoria: "Armadura",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 165,
     daño: 0,
@@ -925,7 +925,7 @@ const items = [
   {
     nombre: "🦺 Pechera de Hierro",
     id: "minecraft:iron_chestplate",
-    categoria: "Armadura",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 240,
     daño: 0,
@@ -936,7 +936,7 @@ const items = [
   {
     nombre: "👖 Pantalones de Hierro",
     id: "minecraft:iron_leggings",
-    categoria: "Armadura",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 225,
     daño: 0,
@@ -947,7 +947,7 @@ const items = [
   {
     nombre: "🥾 Botas de Hierro",
     id: "minecraft:iron_boots",
-    categoria: "Armadura",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 195,
     daño: 0,
@@ -958,7 +958,7 @@ const items = [
   {
     nombre: "🪖 Casco de Diamante",
     id: "minecraft:diamond_helmet",
-    categoria: "Armadura",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 363,
     daño: 0,
@@ -969,7 +969,7 @@ const items = [
   {
     nombre: "🦺 Pechera de Diamante",
     id: "minecraft:diamond_chestplate",
-    categoria: "Armadura",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 528,
     daño: 0,
@@ -980,7 +980,7 @@ const items = [
   {
     nombre: "👖 Pantalones de Diamante",
     id: "minecraft:diamond_leggings",
-    categoria: "Armadura",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 495,
     daño: 0,
@@ -991,7 +991,7 @@ const items = [
   {
     nombre: "🥾 Botas de Diamante",
     id: "minecraft:diamond_boots",
-    categoria: "Armadura",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 429,
     daño: 0,
@@ -1002,7 +1002,7 @@ const items = [
   {
     nombre: "🪖 Casco de Netherita",
     id: "minecraft:netherite_helmet",
-    categoria: "Armadura",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 407,
     daño: 0,
@@ -1013,7 +1013,7 @@ const items = [
   {
     nombre: "🦺 Pechera de Netherita",
     id: "minecraft:netherite_chestplate",
-    categoria: "Armadura",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 592,
     daño: 0,
@@ -1024,7 +1024,7 @@ const items = [
   {
     nombre: "👖 Pantalones de Netherita",
     id: "minecraft:netherite_leggings",
-    categoria: "Armadura",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 555,
     daño: 0,
@@ -1035,7 +1035,7 @@ const items = [
   {
     nombre: "🥾 Botas de Netherita",
     id: "minecraft:netherite_boots",
-    categoria: "Armadura",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 481,
     daño: 0,
@@ -1048,7 +1048,7 @@ const items = [
   {
     nombre: "🐴 Armadura de Caballo de Cuero",
     id: "minecraft:leather_horse_armor",
-    categoria: "Armadura de caballo",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 0,
     daño: 0,
@@ -1059,7 +1059,7 @@ const items = [
   {
     nombre: "🐴 Armadura de Caballo de Hierro",
     id: "minecraft:iron_horse_armor",
-    categoria: "Armadura de caballo",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 0,
     daño: 0,
@@ -1070,7 +1070,7 @@ const items = [
   {
     nombre: "🐴 Armadura de Caballo de Oro",
     id: "minecraft:golden_horse_armor",
-    categoria: "Armadura de caballo",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 0,
     daño: 0,
@@ -1081,7 +1081,7 @@ const items = [
   {
     nombre: "🐴 Armadura de Caballo de Diamante",
     id: "minecraft:diamond_horse_armor",
-    categoria: "Armadura de caballo",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 0,
     daño: 0,
@@ -1092,7 +1092,7 @@ const items = [
   {
     nombre: "🐴 Armadura de Caballo de Netherita",
     id: "minecraft:netherite_horse_armor",
-    categoria: "Armadura de caballo",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 0,
     daño: 0,
@@ -1105,7 +1105,7 @@ const items = [
   {
     nombre: "🐚 Armadura de Nautilus de Cobre",
     id: "minecraft:copper_nautilus_armor",
-    categoria: "Armadura de Nautilus",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 0,
     daño: 0,
@@ -1116,7 +1116,7 @@ const items = [
   {
     nombre: "🐚 Armadura de Nautilus de Hierro",
     id: "minecraft:iron_nautilus_armor",
-    categoria: "Armadura de Nautilus",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 0,
     daño: 0,
@@ -1127,7 +1127,7 @@ const items = [
   {
     nombre: "🐚 Armadura de Nautilus de Oro",
     id: "minecraft:golden_nautilus_armor",
-    categoria: "Armadura de Nautilus",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 0,
     daño: 0,
@@ -1138,7 +1138,7 @@ const items = [
   {
     nombre: "🐚 Armadura de Nautilus de Diamante",
     id: "minecraft:diamond_nautilus_armor",
-    categoria: "Armadura de Nautilus",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 0,
     daño: 0,
@@ -1149,7 +1149,7 @@ const items = [
   {
     nombre: "🐚 Armadura de Nautilus de Netherita",
     id: "minecraft:netherite_nautilus_armor",
-    categoria: "Armadura de Nautilus",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 0,
     daño: 0,
@@ -1162,7 +1162,7 @@ const items = [
   {
     nombre: "🐴 Silla de Montar",
     id: "minecraft:saddle",
-    categoria: "Monturas",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 0,
     daño: 0,
@@ -1173,7 +1173,7 @@ const items = [
   {
     nombre: "🪢 Rienda",
     id: "minecraft:lead",
-    categoria: "Monturas",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 0,
     daño: 0,
@@ -1186,7 +1186,7 @@ const items = [
   {
     nombre: "🍞 Pan",
     id: "minecraft:bread",
-    categoria: "Comida",
+    categoria: "Equipo",
     stack: 64,
     durabilidad: 0,
     daño: 0,
@@ -1197,7 +1197,7 @@ const items = [
   {
     nombre: "🍪 Galleta",
     id: "minecraft:cookie",
-    categoria: "Comida",
+    categoria: "Equipo",
     stack: 64,
     durabilidad: 0,
     daño: 0,
@@ -1208,7 +1208,7 @@ const items = [
   {
     nombre: "🥣 Estofado de Champiñones",
     id: "minecraft:mushroom_stew",
-    categoria: "Comida",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 0,
     daño: 0,
@@ -1219,7 +1219,7 @@ const items = [
   {
     nombre: "🥣 Estofado de Conejo",
     id: "minecraft:rabbit_stew",
-    categoria: "Comida",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 0,
     daño: 0,
@@ -1230,7 +1230,7 @@ const items = [
   {
     nombre: "🥣 Estofado Sospechoso",
     id: "minecraft:suspicious_stew",
-    categoria: "Comida",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 0,
     daño: 0,
@@ -1241,7 +1241,7 @@ const items = [
   {
     nombre: "🥔 Patata Cocida",
     id: "minecraft:baked_potato",
-    categoria: "Comida",
+    categoria: "Equipo",
     stack: 64,
     durabilidad: 0,
     daño: 0,
@@ -1252,7 +1252,7 @@ const items = [
   {
     nombre: "🍰 Pastel",
     id: "minecraft:cake",
-    categoria: "Comida",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 0,
     daño: 0,
@@ -1263,7 +1263,7 @@ const items = [
   {
     nombre: "🎃 Pastel de Calabaza",
     id: "minecraft:pumpkin_pie",
-    categoria: "Comida",
+    categoria: "Equipo",
     stack: 64,
     durabilidad: 0,
     daño: 0,
@@ -1274,7 +1274,7 @@ const items = [
   {
     nombre: "🍖 Carne de Vaca Cocida",
     id: "minecraft:cooked_beef",
-    categoria: "Comida",
+    categoria: "Equipo",
     stack: 64,
     durabilidad: 0,
     daño: 0,
@@ -1285,7 +1285,7 @@ const items = [
   {
     nombre: "🍗 Pollo Cocido",
     id: "minecraft:cooked_chicken",
-    categoria: "Comida",
+    categoria: "Equipo",
     stack: 64,
     durabilidad: 0,
     daño: 0,
@@ -1296,7 +1296,7 @@ const items = [
   {
     nombre: "🥓 Chuleta de Cerdo Cocida",
     id: "minecraft:cooked_porkchop",
-    categoria: "Comida",
+    categoria: "Equipo",
     stack: 64,
     durabilidad: 0,
     daño: 0,
@@ -1307,7 +1307,7 @@ const items = [
   {
     nombre: "🐟 Salmón Cocido",
     id: "minecraft:cooked_salmon",
-    categoria: "Comida",
+    categoria: "Equipo",
     stack: 64,
     durabilidad: 0,
     daño: 0,
@@ -1318,7 +1318,7 @@ const items = [
   {
     nombre: "🐟 Bacalao Cocido",
     id: "minecraft:cooked_cod",
-    categoria: "Comida",
+    categoria: "Equipo",
     stack: 64,
     durabilidad: 0,
     daño: 0,
@@ -1329,7 +1329,7 @@ const items = [
   {
     nombre: "🍖 Cordero Cocido",
     id: "minecraft:cooked_mutton",
-    categoria: "Comida",
+    categoria: "Equipo",
     stack: 64,
     durabilidad: 0,
     daño: 0,
@@ -1340,7 +1340,7 @@ const items = [
   {
     nombre: "🥔 Patata Venenosa",
     id: "minecraft:poisonous_potato",
-    categoria: "Comida",
+    categoria: "Equipo",
     stack: 64,
     durabilidad: 0,
     daño: 0,
@@ -1351,7 +1351,7 @@ const items = [
   {
     nombre: "🌿 Alga Marina Seca",
     id: "minecraft:dried_kelp",
-    categoria: "Comida",
+    categoria: "Equipo",
     stack: 64,
     durabilidad: 0,
     daño: 0,
@@ -1364,7 +1364,7 @@ const items = [
   {
     nombre: "❄️ Bola de Nieve",
     id: "minecraft:snowball",
-    categoria: "Varios",
+    categoria: "Equipo",
     stack: 16,
     durabilidad: 0,
     daño: 0,
@@ -1375,7 +1375,7 @@ const items = [
   {
     nombre: "🐢 Caparazón de Tortuga",
     id: "minecraft:turtle_helmet",
-    categoria: "Armadura",
+    categoria: "Equipo",
     stack: 1,
     durabilidad: 275,
     daño: 0,
@@ -1388,7 +1388,7 @@ const items = [
   {
     nombre: "🍾 Botella Vacía",
     id: "minecraft:glass_bottle",
-    categoria: "Pociones",
+    categoria: "Equipo",
     stack: 64,
     durabilidad: 0,
     daño: 0,
@@ -1399,48 +1399,13 @@ const items = [
   {
     nombre: "✨ Botella de Experiencia",
     id: "minecraft:experience_bottle",
-    categoria: "Pociones",
+    categoria: "Equipo",
     stack: 64,
     durabilidad: 0,
     daño: 0,
     receta: "No se fabrica. Se obtiene de comerciar con clérigos o de cofres",
     mesa: "Ninguna",
     img: "assets/craft/botella_experiencia.png"
-  },
-
-  // ==================== CAÑAS ====================
-  {
-    nombre: "🎣 Caña de Pescar",
-    id: "minecraft:fishing_rod",
-    categoria: "Herramientas",
-    stack: 1,
-    durabilidad: 64,
-    daño: 0,
-    receta: "3 Palos + 2 Hilos",
-    mesa: "Mesa de crafteo",
-    img: "assets/craft/cana_pescar.png"
-  },
-  {
-    nombre: "🥕 Zanahoria en un Palo",
-    id: "minecraft:carrot_on_a_stick",
-    categoria: "Herramientas",
-    stack: 1,
-    durabilidad: 25,
-    daño: 0,
-    receta: "1 Caña de Pescar + 1 Zanahoria",
-    mesa: "Mesa de crafteo",
-    img: "assets/craft/zanahoria_palo.png"
-  },
-  {
-    nombre: "🍄 Hongo Distorsionado en un Palo",
-    id: "minecraft:warped_fungus_on_a_stick",
-    categoria: "Herramientas",
-    stack: 1,
-    durabilidad: 25,
-    daño: 0,
-    receta: "1 Caña de Pescar + 1 Hongo Distorsionado",
-    mesa: "Mesa de crafteo",
-    img: "assets/craft/hongo_palo.png"
   }
 ];
 
