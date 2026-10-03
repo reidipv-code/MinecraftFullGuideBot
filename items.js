@@ -866,7 +866,7 @@ const items = [
     img: "assets/craft/totem.png"
   },
 
-  // ==================== ARMADURAS ====================
+  // ==================== ARMADURAS HUMANAS ====================
   {
     nombre: "🪖 Casco de Cuero",
     id: "minecraft:leather_helmet",
@@ -998,6 +998,50 @@ const items = [
     receta: "4 Lingotes de hierro",
     mesa: "Mesa de crafteo",
     img: "assets/craft/botas_hierro.png"
+  },
+  {
+    nombre: "🪖 Casco de Oro",
+    id: "minecraft:golden_helmet",
+    categoria: "Equipo",
+    stack: 1,
+    durabilidad: 77,
+    daño: 0,
+    receta: "5 Lingotes de oro",
+    mesa: "Mesa de crafteo",
+    img: "assets/craft/casco_oro.png"
+  },
+  {
+    nombre: "🦺 Pechera de Oro",
+    id: "minecraft:golden_chestplate",
+    categoria: "Equipo",
+    stack: 1,
+    durabilidad: 112,
+    daño: 0,
+    receta: "8 Lingotes de oro",
+    mesa: "Mesa de crafteo",
+    img: "assets/craft/pechera_oro.png"
+  },
+  {
+    nombre: "👖 Pantalones de Oro",
+    id: "minecraft:golden_leggings",
+    categoria: "Equipo",
+    stack: 1,
+    durabilidad: 105,
+    daño: 0,
+    receta: "7 Lingotes de oro",
+    mesa: "Mesa de crafteo",
+    img: "assets/craft/pantalones_oro.png"
+  },
+  {
+    nombre: "🥾 Botas de Oro",
+    id: "minecraft:golden_boots",
+    categoria: "Equipo",
+    stack: 1,
+    durabilidad: 91,
+    daño: 0,
+    receta: "4 Lingotes de oro",
+    mesa: "Mesa de crafteo",
+    img: "assets/craft/botas_oro.png"
   },
   {
     nombre: "🪖 Casco de Diamante",
