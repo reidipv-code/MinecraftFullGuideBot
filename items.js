@@ -1516,7 +1516,758 @@ const items = [
     receta: "No se fabrica. Se obtiene de comerciar con clérigos o de cofres",
     mesa: "Ninguna",
     img: "assets/craft/botella_experiencia.png"
-  }
+  },
+  // ==================== NATURALEZA ====================
+
+{
+  nombre: "🌿 Alfombra de Musgo",
+  id: "minecraft:moss_carpet",
+  categoria: "Naturaleza",
+  stack: 64,
+  durabilidad: 0,
+  daño: 0,
+  receta: "1 Bloque de Musgo",
+  mesa: "Mesa de crafteo",
+  img: "assets/craft/alfombra_musgo.png"
+},
+
+{
+  nombre: "🪨 Andesita",
+  id: "minecraft:andesite",
+  categoria: "Naturaleza",
+  stack: 64,
+  durabilidad: 0,
+  daño: 0,
+  receta: "1 Diorita + 1 Piedra",
+  mesa: "Mesa de crafteo",
+  img: "assets/craft/andesita.png"
+},
+
+{
+  nombre: "🪨 Andesita Pulida",
+  id: "minecraft:polished_andesite",
+  categoria: "Naturaleza",
+  stack: 64,
+  durabilidad: 0,
+  daño: 0,
+  receta: "4 Andesita",
+  mesa: "Mesa de crafteo",
+  img: "assets/craft/andesita_pulida.png"
+},
+
+{
+  nombre: "💜 Bloque de Amatista",
+  id: "minecraft:amethyst_block",
+  categoria: "Naturaleza",
+  stack: 64,
+  durabilidad: 0,
+  daño: 0,
+  receta: "4 Fragmentos de Amatista",
+  mesa: "Mesa de crafteo",
+  img: "assets/craft/bloque_amatista.png"
+},
+
+{
+  nombre: "🟫 Arcilla",
+  id: "minecraft:clay",
+  categoria: "Naturaleza",
+  stack: 64,
+  durabilidad: 0,
+  daño: 0,
+  receta: "Se obtiene excavando bloques de arcilla",
+  mesa: "Ninguna",
+  img: "assets/craft/arcilla.png"
+},
+
+{
+  nombre: "🎋 Bloque de Bambú",
+  id: "minecraft:bamboo_block",
+  categoria: "Naturaleza",
+  stack: 64,
+  durabilidad: 0,
+  daño: 0,
+  receta: "9 Bambú",
+  mesa: "Mesa de crafteo",
+  img: "assets/craft/bloque_bambu.png"
+},
+
+{
+  nombre: "🪨 Bloque de Dripstone",
+  id: "minecraft:dripstone_block",
+  categoria: "Naturaleza",
+  stack: 64,
+  durabilidad: 0,
+  daño: 0,
+  receta: "4 Dripstone puntiagudas",
+  mesa: "Mesa de crafteo",
+  img: "assets/craft/bloque_dripstone.png"
+},
+
+{
+  nombre: "🌋 Bloque de Magma",
+  id: "minecraft:magma_block",
+  categoria: "Naturaleza",
+  stack: 64,
+  durabilidad: 0,
+  daño: 0,
+  receta: "4 Crema de Magma",
+  mesa: "Mesa de crafteo",
+  img: "assets/craft/bloque_magma.png"
+},
+
+{
+  nombre: "❄️ Bloque de Nieve",
+  id: "minecraft:snow_block",
+  categoria: "Naturaleza",
+  stack: 64,
+  durabilidad: 0,
+  daño: 0,
+  receta: "4 Bolas de Nieve",
+  mesa: "Mesa de crafteo",
+  img: "assets/craft/bloque_nieve.png"
+},
+
+{
+  nombre: "🔴 Bloque de Verrugas del Nether",
+  id: "minecraft:nether_wart_block",
+  categoria: "Naturaleza",
+  stack: 64,
+  durabilidad: 0,
+  daño: 0,
+  receta: "9 Verrugas del Nether",
+  mesa: "Mesa de crafteo",
+  img: "assets/craft/bloque_verrugas_nether.png"
+},
+
+{
+  nombre: "⬛ Basalto Pulido",
+  id: "minecraft:polished_basalt",
+  categoria: "Naturaleza",
+  stack: 64,
+  durabilidad: 0,
+  daño: 0,
+  receta: "4 Basaltos",
+  mesa: "Mesa de crafteo",
+  img: "assets/craft/basalto_pulido.png"
+},
+
+{
+  nombre: "🎃 Calabaza Iluminada",
+  id: "minecraft:jack_o_lantern",
+  categoria: "Naturaleza",
+  stack: 64,
+  durabilidad: 0,
+  daño: 0,
+  receta: "1 Calabaza tallada + 1 Antorcha",
+  mesa: "Mesa de crafteo",
+  img: "assets/craft/calabaza_iluminada.png"
+},
+
+{
+  nombre: "🫀 Corazón de Creaking",
+  id: "minecraft:creaking_heart",
+  categoria: "Naturaleza",
+  stack: 64,
+  durabilidad: 0,
+  daño: 0,
+  receta: "Bloques de Resina + Troncos de Roble Pálido",
+  mesa: "Mesa de crafteo",
+  img: "assets/craft/corazon_creaking.png"
+},
+
+{
+  nombre: "🪨 Diorita",
+  id: "minecraft:diorite",
+  categoria: "Naturaleza",
+  stack: 64,
+  durabilidad: 0,
+  daño: 0,
+  receta: "1 Cuarzo del Nether + 1 Piedra",
+  mesa: "Mesa de crafteo",
+  img: "assets/craft/diorita.png"
+},
+
+{
+  nombre: "🪨 Diorita Pulida",
+  id: "minecraft:polished_diorite",
+  categoria: "Naturaleza",
+  stack: 64,
+  durabilidad: 0,
+  daño: 0,
+  receta: "4 Dioritas",
+  mesa: "Mesa de crafteo",
+  img: "assets/craft/diorita_pulida.png"
+},
+
+{
+  nombre: "🟠 Grumo de Resina",
+  id: "minecraft:resin_clump",
+  categoria: "Naturaleza",
+  stack: 64,
+  durabilidad: 0,
+  daño: 0,
+  receta: "Se obtiene del Corazón de Creaking",
+  mesa: "Ninguna",
+  img: "assets/craft/grumo_resina.png"
+},
+
+{
+  nombre: "🪨 Granito",
+  id: "minecraft:granite",
+  categoria: "Naturaleza",
+  stack: 64,
+  durabilidad: 0,
+  daño: 0,
+  receta: "1 Diorita + 1 Cuarzo del Nether",
+  mesa: "Mesa de crafteo",
+  img: "assets/craft/granito.png"
+},
+
+{
+  nombre: "🪨 Granito Pulido",
+  id: "minecraft:polished_granite",
+  categoria: "Naturaleza",
+  stack: 64,
+  durabilidad: 0,
+  daño: 0,
+  receta: "4 Granitos",
+  mesa: "Mesa de crafteo",
+  img: "assets/craft/granito_pulido.png"
+},
+
+{
+  nombre: "🧊 Hielo Azul",
+  id: "minecraft:blue_ice",
+  categoria: "Naturaleza",
+  stack: 64,
+  durabilidad: 0,
+  daño: 0,
+  receta: "9 Hielos Compactados",
+  mesa: "Mesa de crafteo",
+  img: "assets/craft/hielo_azul.png"
+},
+
+{
+  nombre: "🧊 Hielo Compactado",
+  id: "minecraft:packed_ice",
+  categoria: "Naturaleza",
+  stack: 64,
+  durabilidad: 0,
+  daño: 0,
+  receta: "9 Hielos",
+  mesa: "Mesa de crafteo",
+  img: "assets/craft/hielo_compactado.png"
+},
+
+{
+  nombre: "🪨 Deepslate Pulida",
+  id: "minecraft:polished_deepslate",
+  categoria: "Naturaleza",
+  stack: 64,
+  durabilidad: 0,
+  daño: 0,
+  receta: "4 Pizarras Profundas",
+  mesa: "Mesa de crafteo",
+  img: "assets/craft/deepslate_pulida.png"
+},
+
+{
+  nombre: "⬛ Piedra Negra Pulida",
+  id: "minecraft:polished_blackstone",
+  categoria: "Naturaleza",
+  stack: 64,
+  durabilidad: 0,
+  daño: 0,
+  receta: "4 Piedras Negras",
+  mesa: "Mesa de crafteo",
+  img: "assets/craft/piedra_negra_pulida.png"
+},
+
+{
+  nombre: "🟫 Tierra Gruesa",
+  id: "minecraft:coarse_dirt",
+  categoria: "Naturaleza",
+  stack: 64,
+  durabilidad: 0,
+  daño: 0,
+  receta: "2 Tierra + 2 Grava",
+  mesa: "Mesa de crafteo",
+  img: "assets/craft/tierra_gruesa.png"
+},
+
+{
+  nombre: "🪨 Toba Pulida",
+  id: "minecraft:polished_tuff",
+  categoria: "Naturaleza",
+  stack: 64,
+  durabilidad: 0,
+  daño: 0,
+  receta: "4 Toba",
+  mesa: "Mesa de crafteo",
+  img: "assets/craft/toba_pulida.png"
+},
+
+{
+  nombre: "🌱 Semillas de Trigo",
+  id: "minecraft:wheat_seeds",
+  categoria: "Naturaleza",
+  stack: 64,
+  durabilidad: 0,
+  daño: 0,
+  receta: "Se obtienen rompiendo hierba",
+  mesa: "Ninguna",
+  img: "assets/craft/semillas_trigo.png"
+},
+
+{
+  nombre: "🍉 Bloque de Sandía",
+  id: "minecraft:melon",
+  categoria: "Naturaleza",
+  stack: 64,
+  durabilidad: 0,
+  daño: 0,
+  receta: "9 Rodajas de Sandía",
+  mesa: "Mesa de crafteo",
+  img: "assets/craft/bloque_sandia.png"
+},
+
+{
+  nombre: "📡 Sensor de Sculk Calibrado",
+  id: "minecraft:calibrated_sculk_sensor",
+  categoria: "Naturaleza",
+  stack: 64,
+  durabilidad: 0,
+  daño: 0,
+  receta: "1 Sensor de Sculk + 3 Fragmentos de Amatista",
+  mesa: "Mesa de crafteo",
+  img: "assets/craft/sculk_calibrado.png"
+},
+
+{
+  nombre: "🦴 Polvo de Hueso",
+  id: "minecraft:bone_meal",
+  categoria: "Naturaleza",
+  stack: 64,
+  durabilidad: 0,
+  daño: 0,
+  receta: "1 Hueso → 3 Polvos de Hueso",
+  mesa: "Mesa de crafteo",
+  img: "assets/craft/polvo_hueso1.png,assets/craft/polvo_hueso2.png"
+},
+
+// ==================== MADERAS ====================
+
+{
+  nombre: "🪵 Madera de Roble",
+  id: "minecraft:oak_wood",
+  categoria: "Naturaleza",
+  stack: 64,
+  durabilidad: 0,
+  daño: 0,
+  receta: "4 Troncos de Roble",
+  mesa: "Mesa de crafteo",
+  img: "assets/craft/madera_roble.png"
+},
+
+{
+  nombre: "🪵 Madera de Abedul",
+  id: "minecraft:birch_wood",
+  categoria: "Naturaleza",
+  stack: 64,
+  durabilidad: 0,
+  daño: 0,
+  receta: "4 Troncos de Abedul",
+  mesa: "Mesa de crafteo",
+  img: "assets/craft/madera_abedul.png"
+},
+
+{
+  nombre: "🪵 Madera de Abeto",
+  id: "minecraft:spruce_wood",
+  categoria: "Naturaleza",
+  stack: 64,
+  durabilidad: 0,
+  daño: 0,
+  receta: "4 Troncos de Abeto",
+  mesa: "Mesa de crafteo",
+  img: "assets/craft/madera_abeto.png"
+},
+
+{
+  nombre: "🪵 Madera de Jungla",
+  id: "minecraft:jungle_wood",
+  categoria: "Naturaleza",
+  stack: 64,
+  durabilidad: 0,
+  daño: 0,
+  receta: "4 Troncos de Jungla",
+  mesa: "Mesa de crafteo",
+  img: "assets/craft/madera_jungla.png"
+},
+
+{
+  nombre: "🪵 Madera de Acacia",
+  id: "minecraft:acacia_wood",
+  categoria: "Naturaleza",
+  stack: 64,
+  durabilidad: 0,
+  daño: 0,
+  receta: "4 Troncos de Acacia",
+  mesa: "Mesa de crafteo",
+  img: "assets/craft/madera_acacia.png"
+},
+
+{
+  nombre: "🪵 Madera de Roble Oscuro",
+  id: "minecraft:dark_oak_wood",
+  categoria: "Naturaleza",
+  stack: 64,
+  durabilidad: 0,
+  daño: 0,
+  receta: "4 Troncos de Roble Oscuro",
+  mesa: "Mesa de crafteo",
+  img: "assets/craft/madera_roble_oscuro.png"
+},
+
+{
+  nombre: "🪵 Madera de Manglar",
+  id: "minecraft:mangrove_wood",
+  categoria: "Naturaleza",
+  stack: 64,
+  durabilidad: 0,
+  daño: 0,
+  receta: "4 Troncos de Manglar",
+  mesa: "Mesa de crafteo",
+  img: "assets/craft/madera_manglar.png"
+},
+
+{
+  nombre: "🪵 Madera de Cerezo",
+  id: "minecraft:cherry_wood",
+  categoria: "Naturaleza",
+  stack: 64,
+  durabilidad: 0,
+  daño: 0,
+  receta: "4 Troncos de Cerezo",
+  mesa: "Mesa de crafteo",
+  img: "assets/craft/madera_cerezo.png"
+},
+
+{
+  nombre: "🪵 Madera de Bambú",
+  id: "minecraft:bamboo_mosaic",
+  categoria: "Naturaleza",
+  stack: 64,
+  durabilidad: 0,
+  daño: 0,
+  receta: "2 Losas de Bambú",
+  mesa: "Mesa de crafteo",
+  img: "assets/craft/mosaico_bambu.png"
+},
+
+{
+  nombre: "🪵 Madera de Crimson",
+  id: "minecraft:crimson_hyphae",
+  categoria: "Naturaleza",
+  stack: 64,
+  durabilidad: 0,
+  daño: 0,
+  receta: "4 Tallos de Crimson",
+  mesa: "Mesa de crafteo",
+  img: "assets/craft/madera_crimson.png"
+},
+
+{
+  nombre: "🪵 Madera de Warped",
+  id: "minecraft:warped_hyphae",
+  categoria: "Naturaleza",
+  stack: 64,
+  durabilidad: 0,
+  daño: 0,
+  receta: "4 Tallos de Warped",
+  mesa: "Mesa de crafteo",
+  img: "assets/craft/madera_warped.png"
+},
+
+{
+  nombre: "🪵 Madera de Roble Pálido",
+  id: "minecraft:pale_oak_wood",
+  categoria: "Naturaleza",
+  stack: 64,
+  durabilidad: 0,
+  daño: 0,
+  receta: "4 Troncos de Roble Pálido",
+  mesa: "Mesa de crafteo",
+  img: "assets/craft/madera_roble_palido.png"
+},
+
+// ==================== OBJETOS QUE ESTABAN EN NATURALEZA PERO AHORA SON EQUIPO ====================
+
+{
+  nombre: "🛡️ Armadura de Lobo",
+  id: "minecraft:wolf_armor",
+  categoria: "Equipo",
+  stack: 1,
+  durabilidad: 64,
+  daño: 0,
+  receta: "6 Escamas de Armadillo",
+  mesa: "Mesa de crafteo",
+  img: "assets/craft/armadura_lobo.png"
+},
+
+{
+  nombre: "🔨 Maza",
+  id: "minecraft:mace",
+  categoria: "Equipo",
+  stack: 1,
+  durabilidad: 500,
+  daño: 5,
+  receta: "1 Núcleo Pesado + 1 Vara de Breeze",
+  mesa: "Mesa de crafteo",
+  img: "assets/craft/maza.png"
+},
+
+{
+  nombre: "🖌️ Brocha",
+  id: "minecraft:brush",
+  categoria: "Equipo",
+  stack: 1,
+  durabilidad: 64,
+  daño: 0,
+  receta: "1 Pluma + 1 Lingote de Cobre + 1 Palo",
+  mesa: "Mesa de crafteo",
+  img: "assets/craft/brocha.png"
+},
+
+{
+  nombre: "🔭 Catalejo",
+  id: "minecraft:spyglass",
+  categoria: "Equipo",
+  stack: 1,
+  durabilidad: 0,
+  daño: 0,
+  receta: "1 Fragmento de Amatista + 2 Lingotes de Cobre",
+  mesa: "Mesa de crafteo",
+  img: "assets/craft/catalejo.png"
+},
+
+{
+  nombre: "💨 Carga de Viento",
+  id: "minecraft:wind_charge",
+  categoria: "Equipo",
+  stack: 64,
+  durabilidad: 0,
+  daño: 0,
+  receta: "1 Vara de Breeze → 4 Cargas de Viento",
+  mesa: "Mesa de crafteo",
+  img: "assets/craft/carga_viento.png"
+},
+
+{
+  nombre: "🎒 Saco",
+  id: "minecraft:bundle",
+  categoria: "Equipo",
+  stack: 1,
+  durabilidad: 0,
+  daño: 0,
+  receta: "1 Cuero + 1 Hilo",
+  mesa: "Mesa de crafteo",
+  img: "assets/craft/saco.png"
+},
+
+// ==================== ARNESES ====================
+
+{
+  nombre: "🤍 Arnes Blanco / Montura para Ghast Blanco",
+  id: "minecraft:white_harness",
+  categoria: "Equipo",
+  stack: 1,
+  durabilidad: 0,
+  daño: 0,
+  receta: "3 Cuero + 2 Vidrio + 1 Lana Blanca",
+  mesa: "Mesa de crafteo",
+  img: "assets/craft/arnes_blanco.png"
+},
+
+{
+  nombre: "🧡 Arnes Naranja / Montura para Ghast Naranja",
+  id: "minecraft:orange_harness",
+  categoria: "Equipo",
+  stack: 1,
+  durabilidad: 0,
+  daño: 0,
+  receta: "3 Cuero + 2 Vidrio + 1 Lana Naranja",
+  mesa: "Mesa de crafteo",
+  img: "assets/craft/arnes_naranja.png"
+},
+
+{
+  nombre: "💗 Arnes Magenta / Montura para Ghast Magenta",
+  id: "minecraft:magenta_harness",
+  categoria: "Equipo",
+  stack: 1,
+  durabilidad: 0,
+  daño: 0,
+  receta: "3 Cuero + 2 Vidrio + 1 Lana Magenta",
+  mesa: "Mesa de crafteo",
+  img: "assets/craft/arnes_magenta.png"
+},
+
+{
+  nombre: "💙 Arnes Azul Claro / Montura para Ghast Azul Claro",
+  id: "minecraft:light_blue_harness",
+  categoria: "Equipo",
+  stack: 1,
+  durabilidad: 0,
+  daño: 0,
+  receta: "3 Cuero + 2 Vidrio + 1 Lana Azul Claro",
+  mesa: "Mesa de crafteo",
+  img: "assets/craft/arnes_azul_claro.png"
+},
+
+{
+  nombre: "💛 Arnes Amarillo / Montura para Ghast Amarillo",
+  id: "minecraft:yellow_harness",
+  categoria: "Equipo",
+  stack: 1,
+  durabilidad: 0,
+  daño: 0,
+  receta: "3 Cuero + 2 Vidrio + 1 Lana Amarilla",
+  mesa: "Mesa de crafteo",
+  img: "assets/craft/arnes_amarillo.png"
+},
+
+{
+  nombre: "💚 Arnes Lima / Montura para Ghast Lima",
+  id: "minecraft:lime_harness",
+  categoria: "Equipo",
+  stack: 1,
+  durabilidad: 0,
+  daño: 0,
+  receta: "3 Cuero + 2 Vidrio + 1 Lana Lima",
+  mesa: "Mesa de crafteo",
+  img: "assets/craft/arnes_lima.png"
+},
+
+{
+  nombre: "💗 Arnes Rosa / Montura para Ghast Rosa",
+  id: "minecraft:pink_harness",
+  categoria: "Equipo",
+  stack: 1,
+  durabilidad: 0,
+  daño: 0,
+  receta: "3 Cuero + 2 Vidrio + 1 Lana Rosa",
+  mesa: "Mesa de crafteo",
+  img: "assets/craft/arnes_rosa.png"
+},
+
+{
+  nombre: "🩶 Arnes Gris / Montura para Ghast Gris",
+  id: "minecraft:gray_harness",
+  categoria: "Equipo",
+  stack: 1,
+  durabilidad: 0,
+  daño: 0,
+  receta: "3 Cuero + 2 Vidrio + 1 Lana Gris",
+  mesa: "Mesa de crafteo",
+  img: "assets/craft/arnes_gris.png"
+},
+
+{
+  nombre: "⬜ Arnes Gris Claro / Montura para Ghast Gris Claro",
+  id: "minecraft:light_gray_harness",
+  categoria: "Equipo",
+  stack: 1,
+  durabilidad: 0,
+  daño: 0,
+  receta: "3 Cuero + 2 Vidrio + 1 Lana Gris Claro",
+  mesa: "Mesa de crafteo",
+  img: "assets/craft/arnes_gris_claro.png"
+},
+
+{
+  nombre: "🩵 Arnes Cian / Montura para Ghast Cian",
+  id: "minecraft:cyan_harness",
+  categoria: "Equipo",
+  stack: 1,
+  durabilidad: 0,
+  daño: 0,
+  receta: "3 Cuero + 2 Vidrio + 1 Lana Cian",
+  mesa: "Mesa de crafteo",
+  img: "assets/craft/arnes_cian.png"
+},
+
+{
+  nombre: "💜 Arnes Púrpura / Montura para Ghast Púrpura",
+  id: "minecraft:purple_harness",
+  categoria: "Equipo",
+  stack: 1,
+  durabilidad: 0,
+  daño: 0,
+  receta: "3 Cuero + 2 Vidrio + 1 Lana Púrpura",
+  mesa: "Mesa de crafteo",
+  img: "assets/craft/arnes_purpura.png"
+},
+
+{
+  nombre: "💙 Arnes Azul / Montura para Ghast Azul",
+  id: "minecraft:blue_harness",
+  categoria: "Equipo",
+  stack: 1,
+  durabilidad: 0,
+  daño: 0,
+  receta: "3 Cuero + 2 Vidrio + 1 Lana Azul",
+  mesa: "Mesa de crafteo",
+  img: "assets/craft/arnes_azul.png"
+},
+
+{
+  nombre: "🤎 Arnes Marrón / Montura para Ghast Marrón",
+  id: "minecraft:brown_harness",
+  categoria: "Equipo",
+  stack: 1,
+  durabilidad: 0,
+  daño: 0,
+  receta: "3 Cuero + 2 Vidrio + 1 Lana Marrón",
+  mesa: "Mesa de crafteo",
+  img: "assets/craft/arnes_marron.png"
+},
+
+{
+  nombre: "💚 Arnes Verde / Montura para Ghast Verde",
+  id: "minecraft:green_harness",
+  categoria: "Equipo",
+  stack: 1,
+  durabilidad: 0,
+  daño: 0,
+  receta: "3 Cuero + 2 Vidrio + 1 Lana Verde",
+  mesa: "Mesa de crafteo",
+  img: "assets/craft/arnes_verde.png"
+},
+
+{
+  nombre: "❤️ Arnes Rojo / Montura para Ghast Rojo",
+  id: "minecraft:red_harness",
+  categoria: "Equipo",
+  stack: 1,
+  durabilidad: 0,
+  daño: 0,
+  receta: "3 Cuero + 2 Vidrio + 1 Lana Roja",
+  mesa: "Mesa de crafteo",
+  img: "assets/craft/arnes_rojo.png"
+},
+
+{
+  nombre: "🖤 Arnes Negro / Montura para Ghast Negro",
+  id: "minecraft:black_harness",
+  categoria: "Equipo",
+  stack: 1,
+  durabilidad: 0,
+  daño: 0,
+  receta: "3 Cuero + 2 Vidrio + 1 Lana Negra",
+  mesa: "Mesa de crafteo",
+  img: "assets/craft/arnes_negro.png"
+      }
 ];
 
 module.exports = items;
