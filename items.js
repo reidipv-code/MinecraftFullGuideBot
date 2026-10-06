@@ -2019,7 +2019,7 @@ const items = [
     img: "assets/craft/lapis.png"
   },
   {
-    nombre: "🍉 Sandía",
+    nombre: "🍉 Sandia",
     id: "minecraft:melon",
     categoria: "Naturaleza",
     stack: 64,
