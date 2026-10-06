@@ -2014,8 +2014,8 @@ const items = [
     stack: 64,
     durabilidad: 0,
     daño: 0,
-    receta: "Minería de mena de lapislázuli",
-    mesa: "Ninguna",
+    receta: "x1 Bloque de lapislázuli",
+    mesa: "Mesa de Crafteo",
     img: "assets/craft/lapis.png"
   },
   {
@@ -2025,8 +2025,8 @@ const items = [
     stack: 64,
     durabilidad: 0,
     daño: 0,
-    receta: "Se obtiene de cultivos de sandía",
-    mesa: "Ninguna",
+    receta: "x1 Bloque de Sandia",
+    mesa: "Mesa de Crafteo",
     img: "assets/craft/sandia_bloque.png"
   },
   {
