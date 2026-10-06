@@ -2019,7 +2019,7 @@ const items = [
     img: "assets/craft/lapis.png"
   },
   {
-    nombre: "🍉 Sandia",
+    nombre: "🍉 Bloque de Sandia",
     id: "minecraft:melon",
     categoria: "Naturaleza",
     stack: 64,
@@ -2058,7 +2058,7 @@ const items = [
     stack: 64,
     durabilidad: 0,
     daño: 0,
-    receta: "Se obtiene de cultivos de trigo",
+    receta: "1 Bloque de Heno",
     mesa: "Ninguna",
     img: "assets/craft/trigo.png"
   },
