@@ -2027,7 +2027,7 @@ const items = [
     daño: 0,
     receta: "x1 Bloque de Sandia",
     mesa: "Mesa de Crafteo",
-    img: "assets/craft/sandia_bloque.png"
+    img: "assets/craft/bloque_sandia.png"
   },
   {
     nombre: "🥕 Zanahoria Dorada",
